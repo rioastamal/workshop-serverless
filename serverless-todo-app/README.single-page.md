@@ -25,6 +25,69 @@ Layanan lain yang digunakan adalah:
 
 <!-- end step-0 -->
 
+### Upload Public SSH Key ke GitHub
+
+Masih pada terminal di AWS Cloud9. Buat SSH key baru.
+
+```
+ssh-keygen
+```
+
+Kosongsi saja password dan langsung tekan ENTER.
+
+```
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/ec2-user/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/ec2-user/.ssh/id_rsa.
+Your public key has been saved in /home/ec2-user/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:sEXfWVTXPucWIB57xB6n1bNnlkLgnLCcvw/KtCuZ1iw ec2-user@ip-172-31-30-222
+The key's randomart image is:
++---[RSA 2048]----+
+|        .. .o.o.=|
+|       ...*+.O ++|
+|      . .+o+X *.+|
+|       +  .o = =*|
+|      . S  .. .+=|
+|            .   o|
+|        =. o   . |
+|       Eooo o    |
+|      . o=.  .   |
++----[SHA256]-----+
+```
+
+Harusnya sekarang ada dua file baru `~/.ssh/id_rsa` dan `~/.ssh/id_rsa.pub` pada direktori `~/.ssh/`.
+
+```sh
+ls -l ~/.ssh
+```
+
+```
+total 12
+-rw------- 1 ec2-user ec2-user  991 Feb  21 01:17 authorized_keys
+-rw------- 1 ec2-user ec2-user 1679 Feb  21 02:40 id_rsa
+-rw-r--r-- 1 ec2-user ec2-user  407 Feb  21 02:40 id_rsa.pub
+```
+
+Salin isi dari `~/.ssh/id_rsa.pub`.
+
+```sh
+cat ~/.ssh/id_rsa.pub
+```
+
+Kita akan memasukkan public key tersebut ke akun GitHub.
+
+1. Buka akun GitHub Anda masuk ke **Settings**, 
+2. Pilih **SSH and GPG keys**, pilih **New SSH key**
+3. Pada title isikan &quot;awsug-workshop-cloud9&quot;
+4. Pada **Key type** pilih **Authentication Key**
+5. Paste isi dari `~/.ssh/id_rsa.pub` ke inputan **Key**
+6. Pilih **Add SSH key**
+
+Setelah proses selesai harusnya Anda dapat melakukan push ke repository pada akun GitHub Anda.
+
 ### Membuat S3 Bucket
 
 Bucket ini akan digunakan untuk menyimpan kode fungsi Lambda yang kemudian akan dideploy lewat halaman console AWS Lambda.
@@ -59,7 +122,7 @@ Kita akan membuat sebuah fungsi pada AWS Lambda untuk menjalankan aplikasi yang 
 
 Fungsi ini akan kita integrasikan dengan Amazon API Gateway sebagai proxy/gateway agar bisa diakses dari internet.
 
-1. Masuk pada halaman Amazon SQS. Anda dapat melakukannya lewat inputan _Search_ disisi atas AWS console lalu ketik &quot;lambda&quot; pilih **AWS Lambda**, pilih **Create a function**
+1. Masuk pada halaman AWS Lambda. Anda dapat melakukannya lewat inputan _Search_ disisi atas AWS console lalu ketik &quot;lambda&quot; pilih **AWS Lambda**, pilih **Create a function**
 2. Pada **Function name** isikan &quot;serverless-todo-api-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-api-rioastamal**
 3. Pada **Runtime** pilih **Node.js 16.x** kemudian **Architecture** pilih **x86_64**
 4. Sisanya biarkan sesuai nilai bawaan, kemudian pilih **Create function**
@@ -629,7 +692,7 @@ Anda akan dibawa ke halaman IAM untuk mengedit role. Pastikan Anda berada pada h
 5. Pada **Other permissions policies** ketik **ses** lalu ENTER
 6. Centang **AmazonSESFullAccess**, pilih **Clear filters**
 7. Pada **Other permissions policies** ketik **ssm** lalu ENTER
-8. Centang **AmazonSSMReadOnlyAccess**, pilih **Clear filters**
+8. Centang **AmazonSQSFullAccess**, pilih **Clear filters**
 9. Pilih **Add permissions**
 
 Mari ulangi proses pemanggilan endpoint `/login` yang gagal sebelumnya.
@@ -842,52 +905,6 @@ Gunakan perintah `git clone` berikut untuk meng-clone project. Sesuaikan dengan 
 git clone git@github.com:rioastamal-examples/serverless-todo-vue.git
 ```
 
-#### Membuat Deploy Keys untuk GitHub
-
-Masih pada terminal di AWS Cloud9. Buat SSH key baru.
-
-```
-ssh-keygen
-```
-
-Kosongsi saja password dan langsung tekan ENTER.
-
-```
-Generating public/private rsa key pair.
-Enter file in which to save the key (/home/ec2-user/.ssh/id_rsa): 
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
-Your identification has been saved in /home/ec2-user/.ssh/id_rsa.
-Your public key has been saved in /home/ec2-user/.ssh/id_rsa.pub.
-The key fingerprint is:
-SHA256:sEXfWVTXPucWIB57xB6n1bNnlkLgnLCcvw/KtCuZ1iw ec2-user@ip-172-31-30-222
-The key's randomart image is:
-+---[RSA 2048]----+
-|        .. .o.o.=|
-|       ...*+.O ++|
-|      . .+o+X *.+|
-|       +  .o = =*|
-|      . S  .. .+=|
-|            .   o|
-|        =. o   . |
-|       Eooo o    |
-|      . o=.  .   |
-+----[SHA256]-----+
-```
-
-Harusnya sekarang ada dua file baru `~/.ssh/id_rsa` dan `~/.ssh/id_rsa.pub` pada direktori `~/.ssh/`.
-
-```sh
-ls -l ~/.ssh
-```
-
-```
-total 12
--rw------- 1 ec2-user ec2-user  991 Feb  21 01:17 authorized_keys
--rw------- 1 ec2-user ec2-user 1679 Feb  21 02:40 id_rsa
--rw-r--r-- 1 ec2-user ec2-user  407 Feb  21 02:40 id_rsa.pub
-```
-
 #### File login.html
 
 Buka file `login.html` dan tambahkan link ke halaman `/register.html` dengan menghilangkan komentar sekitar baris 30.
@@ -974,16 +991,282 @@ Ketika push sukses dilakukan sekarang coba masuk ke halaman [AWS Amplify](consol
 
 Hal ini menunjukkan AWS Amplify mendeteksi perubahan dan melakukan build secara otomatis. Dengan ini Anda tidak perlu mengelola CI/CD server sendiri untuk frontend.
 
+Ketika build selesai coba kembali buka halaman aplikasi Frontend untuk memastikan bahwa perubahan telah ter-deploy dengan sempurna.
+
+### Decoupling Proses Registrasi
+
+Jika Anda perhatikan proses registrasi masih terikat dengan proses lain yang sebenarnya bisa dipisah yaitu proses pengiriman email. 
+
+Bayangkan jika layanan email bermasalah maka proses proses registrasi dianggap gagal oleh pengguna akhir. Padahal proses pengiriman sebenarnya bisa menunggu beberapa saat setelah registrasi selesai.
+
+Untuk melakukan decoupling bisa digunakan queue dan proses registrasi akan mengirim pesan ke queue. Selanjutnya pesan di queue akan diproses worker yang bertugas untuk mengirimkan email.
+
+Worker untuk mengirim email nantinya akan dijalankan pada AWS Lambda dan Amazon SQS untuk menyimpan queue. 
+
+Kita dapat mengintegrasikan Amazon SQS dengan AWS Lambda dengan mudah. Dimana jika terdapat pesan baru masuk ke queue di SQS, maka pesan tersebut dapat diteruskan ke sebuah fungsi Lambda.
+
+{{GAMBAR_ARSITEKTUR_BARU}}
+
 ### Membuat SQS queue
 
 Kita akan menggunakan Amazon SQS untuk melakukan decoupling API dari task yang tidak harus selesai saat itu juga. Dalam hal ini task pengiriman welcome email. 
 
 Task ini tidak harus langsung selesai ketika API registration dipanggil dan ada kemungkinan proses pengiriman email lambat. Sehingga task ini kandidat yang cocok untuk dikirim ke queue.
 
-1. Masuk pada halaman Amazon SQS. Anda dapat melakukannya lewat inputan _Search_ disisi atas AWS console lalu ketik &quot;sqs&quot; - pilih **Amazon Simple Queue Service** - **Create queue**
+1. Masuk pada halaman [Amazon SQS](https://console.aws.amazon.com/sqs/home) 
+2. Pilih **Create queue**
 2. Pada pilihan **Type** pilih **Standard** dan pada **Name** isikan &quot;serverless-todo-welcome-email-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-welcome-email-rioastamal**
 3. Sisanya biarkan sesuai nilai bawaan, kemudian pilih **Create queue**
 
 Nantinya queue ini akan digunakan untuk menyimpan pesan yang dikirimkan oleh API ketika user baru saja mendaftar.
 
 Kemudian pesan ini akan diproses oleh worker dalam hal ini adalah sebuah fungsi Lambda.
+
+### Membuat Welcome Email Worker dengan AWS Lambda
+
+Fungsi Lambda ini bertugas untuk memproses pesan yang ada di queue yang dikirim oleh proses registrasi.
+
+1. Masuk pada halaman [AWS Lambda](https://console.aws.amazon.com/lambda/home). kemudian halaman **Functions**, pilih **Create function**
+2. Pada **Function name** isikan &quot;serverless-todo-email-worker-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-email-worker-rioastamal**
+3. Pada **Runtime** pilih **Node.js 16.x** kemudian **Architecture** pilih **x86_64**
+4. Pada **Change default execution role**, pilih **Use an existing role**, pada **Existing role** pilih role yang sebelumnya dibuat, contoh milik saya **service-role/serverles-todo-api-rioastamal-role-RANDOM**
+5. Sisanya biarkan sesuai nilai bawaan, kemudian pilih **Create function**
+
+Kita memilih role yang sebelumnya agar kita tidak perlu melakukan setup ulang permission. Pada kasus production Anda harusnya hanya memberikan permission yang diperlukan saja.
+
+Selanjutnya kita akan mengkonfigurasi environment variable yang diperlukan.
+
+1. Pada fungsi Lambda yang dibuat, pilih tab **Configuration**, pilih **Environment variables**
+2. Pilih **Edit**, pilih **Add environment variable**, tambahkan environment variable berikut tapi sesuaikan dengan milik Anda.
+   - **Key**: `APP_TABLE_NAME`, **Value**: `serverless-todo-rioastamal`
+   - **Key**: `APP_URL`, **Value**: `https://main.d1f7gufsd46hhz.amplifyapp.com` (URL dari Amplify Hosting untuk aplikasi frontend)
+   - **Key**: `APP_FROM_EMAIL_ADDR`, **Value**: `EMAIL.ANDA+sender@gmail.com` (Ganti dengan email pengirim yang telah diverifikasi di Amazon SES)
+3. Pilih **Save**
+
+Fungsi Lambda ini perlu untuk mengakses Amazon SQS jadi permission perlu ditambahkan pada _execution role_.
+
+1. Masih pada tab **Configuration**, pilih **Permissions**
+2. Pada **Execution Role** pilih **Role name** untuk membuka halaman IAM
+3. Pilih **Add Permissions**, pilih **Attach policies**
+4. Pada pencarian isikan &quot;SQS&quot; kemudian ENTER
+5. Centang **AWSLambdaSQSQueueExecutionRole** 
+6. Pilih **Add permissions**
+
+Langkah berikutnya adalah integrasi SQS queue dengan fungsi Lambda.
+
+1. Masih pada tab **Configuration**, pilih **Triggers*, pilih **Add trigger**
+2. Pada **Trigger configuration** ketik &quot;SQS&quot; lalu pilih **SQS**
+3. Pada **SQS queue** pilih queue yang telah dibuat sebelumnya, milik saya adalah **serverless-todo-welcome-email-rioastamal**
+4. Biarkan isian sisanya sesuai bawaan, pilih **Add**
+
+#### Clone Email Worker Repo
+
+Selanjutnya clone repository [serverless-todo-email-worker](https://github.com/rioastamal-examples/serverless-todo-email-worker). Masuk ke sesi terminal pada AWS Cloud9 pastian Anda berada pada `~/environment`.
+
+```sh
+cd ~/environment
+```
+
+Kemudian lakukan clone.
+
+```sh
+git clone git@github.com:rioastamal-examples/serverless-todo-email-worker.git
+```
+
+Masuk pada direktori `serverless-todo-email-worker` dan install semua dependencies
+
+```sh
+cd serverless-todo-email-worker
+```
+
+```sh
+npm install --omit=dev
+```
+
+Proses registrasi nantinya mengirim pesan ke queue dengan format JSON seperti berikut:
+
+```json
+{ 
+  "username": "USERNAME"
+}
+```
+
+Worker kemudian akan mengambil pesan tersebut dan melakukan query ke DynamoDB untuk mendapatkan detil dari username `USERNAME` seperti `fullname` dan `email`. Setelah mendapatkan data tersebut maka worker akan mengirim email menggunakan Amazon SES.
+
+#### Mencoba Worker di Lokal
+
+Berbeda dengan code di `serverless-todo-api` di pada worker ini 100% dibuat khusus untuk dijalankan di Lambda sehingga tidak ada proses binding port dan sebagainya. Dapat dilihat pada `src/handlers/main.js`.
+
+Untuk menjalankan di lokal Anda perlu memanggil file `local.js`. File ini akan membaca file `event-sqs.sample.json` yang mensimulasikan event dari SQS.
+
+Kita akan mencoba mengirim ulang email registrasi ke username `workshop-user1`. Ada beberapa environment variable yang perlu diset yaitu.
+
+- `APP_TABLE_NAME` nama tabel di DynamoDB
+- `APP_FROM_EMAIL_ADDR` email pengirim yang verified di Amazon SES
+- `APP_URL` URL frontend di Amplify Hosting
+- `APP_DUMMY_SQS_BODY` simulasi data yang dikirim (hanya untuk eksekusi lokal saja)
+
+Sesuaikan nilainya dengan milik Anda.
+
+```sh
+export APP_TABLE_NAME=serverless-todo-rioastamal \
+APP_URL=https://qb63qt4402.execute-api.ap-southeast-1.amazonaws.com \
+APP_FROM_EMAIL_ADDR=EMAIL.ANDA+sender@gmail.com \
+APP_DUMMY_SQS_BODY='{ "username": "workshop-user1" }'
+```
+
+```sh
+node local.js
+```
+
+Jika sukses maka harusnya anda menerima email. Cek inbox email yang digunakan oleh `workshop-user1`.
+
+#### Deploy Email Worker ke Fungsi Lambda
+
+Script akan kita paket menjadi zip dan upload ke S3 bucket, kemudian kita impor ke fungsi AWS Lambda yang dibuat.
+
+Pastikan masih berada pada root directory `serverless-todo-email-worker`. Jalankan script `build.sh` dan set nilai dari environment variable `APP_FUNCTION_BUCKET` sesuai dengan milik Anda.
+
+```sh
+APP_FUNCTION_BUCKET=serverless-workshop-202303-rioastamal \
+bash build.sh
+```
+
+Perlu diingat fungsi utama dari worker email adalah file `src/handlers/main.js` dan nama fungsinya `welcomeEmailSender`. Sehingga Anda perlu mengubah konfigurasi Handler.
+
+1. Masuk pada halaman fungsi Lambda serverless-todo-email-worker
+2. Pada bagian **Runtime settings** pilih **Edit**
+3. Pada **Handler** isikan **src/handlers/main.welcomeEmailSender**
+4. Pilih **Save**
+
+#### Mencoba Email Worker lewat Test event
+
+Masuk ke halaman fungsi Lambda email worker yang dibuat, milik saya adalah **serverless-todo-email-worker-rioastamal**.
+
+1. Pilih tab **Test**
+2. Scroll ke **Even JSON**, masukkan JSON berikut
+
+```json
+{
+    "Records": [
+        {
+            "messageId": "059f36b4-87a3-44ab-83d2-661975830a7d",
+            "receiptHandle": "AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...",
+            "body": "{ \"username\": \"workshop-user1\" }",
+            "attributes": {
+                "ApproximateReceiveCount": "1",
+                "SentTimestamp": "1545082649183",
+                "SenderId": "AIDAIENQZJOLO23YVJ4VO",
+                "ApproximateFirstReceiveTimestamp": "1545082649185"
+            },
+            "messageAttributes": {},
+            "md5OfBody": "098f6bcd4621d373cade4e832627b4f6",
+            "eventSource": "aws:sqs",
+            "eventSourceARN": "arn:aws:sqs:us-east-2:123456789012:my-queue",
+            "awsRegion": "ap-southeast-1"
+        }
+    ]
+}
+```
+
+3. Pilih **Test** tanpa perlu save
+4. Pilih **Details** untuk melihat output dari execution
+
+Jika muncul tulisan **Message sent to workshop-user1** berarti proses berjalan dengan sukses. Cek inbox email Anda, email ini dikirim kepada username `workshop-user1` yang dibuat pada langkah-langkah yang lalu.
+
+### Decoupling Email dari Backend
+
+Proses decoupling pada sisi backend di project `serverless-todo-api` adalah membuang code proses pengiriman email dan menggantinya dengan queue.
+
+Pada workshop ini saya sudah menyiapkan code yang sudah jadi di branch yang berbeda yaitu `decoupled-welcome-email`. 
+
+Pada terminal di AWS Cloud9 gunakan perintah berikut untuk melihat remote branch di project `serverless-todo-api`.
+
+```sh
+cd ~/environment/serverless-todo-api
+```
+
+```sh
+git branch -a
+```
+
+```
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/decoupled-welcome-email
+  remotes/origin/main
+```
+
+Buat branch baru bernama `decoupled-welcome-email` dan masuk pada branch tersebut.
+
+```sh
+git checkout -b decoupled-welcome-email origin/decoupled-welcome-email
+```
+
+Sekarang harusnya ada dua branch di local.
+
+```sh
+git branch
+```
+
+```
+* decoupled-welcome-email
+  main
+```
+
+Coba buka kembali file `src/index.js` maka akan ada perbedaan dengan sebelumnya. Dimana sekarang fungsi `sendWelcomeEmail` bukan mengirim email langsung melainkan hanya mengirim pesan ke SQS queue.
+
+```javascript
+async function sendWelcomeEmail(username)
+{
+  const queueResponse = await sqsclient.send(new SendMessageCommand({
+    QueueUrl: sqsQueueUrl,
+    MessageBody: JSON.stringify(({ username: username }))
+  }));
+  
+  console.log('queueResponse', queueResponse);
+}
+```
+
+#### Deploy Ulang Fungsi Lambda untuk Backend
+
+Pastikan masih berada pada branch `decoupled-welcome-email`. Jalankan perintah untuk build dan upload zip ke S3 bucket. Sesuaikan nama bucket milik Anda.
+
+```sh
+APP_FUNCTION_BUCKET=serverless-workshop-202303-rioastamal \
+bash build.sh
+```
+
+Setelah sukses diupload, lanjutkan dengan mengimpor file zip tersebut.
+
+1. Masuk ke halaman [AWS Lambda](https://console.aws.amazon.com/lambda/home), pilih fungsi serverless-todo-api-{{NICKNAME}}
+2. Pilih tab **Code**, pilih **Upload from**, pilih **Amazon S3 location**
+3. Pada **Amazon S3 link URL** isikan dari nilai dari Object URL `serverless-todo-api.zip` yang ada di S3 bucket. (Masuk pada halaman S3 bucket untuk menyalin nilainya)
+
+Selanjutnya adalah menambah environment variable baru di fungsi Lambda. Yaitu `APP_SQS_URL`, nilai URL dapat Anda lihat pada halaman SQS queue yang telah dibuat sebelumnya.
+
+1. Masih pada halaman fungsi Lambda yang sama
+2. Pilih tab **Configuration**, pilih **Environment variables**
+3. Pilih **Edit** dan tambahkan environment variable berikut.
+   - **Key**: `APP_SQS_URL`, **Value**: `https://sqs.ap-southeast-1.amazonaws.com/212473567997/serverless-todo-welcome-email-rioastamal` (Ganti dengan milik Anda)
+4. Pilih **Save**
+
+Sekarang harusnya proses decoupling pengiriman welcome email dan registrasi selesai.
+
+Buka kembali halaman frontend, navigasi ke `/register.html` untuk mencoba melakukan registrasi user dengan backend yang sudah decoupling dari welcome email.
+
+### Penutup
+
+Selamat Anda telah menyelesaikan workshop &quot;Membangun Backend dan Frontend dengan Arsitektur Serverless&quot;. 
+
+Pada workshop ini Anda telah mempelajari bagaimana memanfaatkan layanan-layanan AWS untuk deployment aplikasi backend dan frontend. AWS Lambda untuk menjalankan code, Amazon DynamoDB sebagai NoSQL database, AWS Amplify untuk hosting frontend, Amazon SES untuk mengirim email, Amazon API Gateway sebagai proxy/router, Amazon SQS untuk menyimpan queue dan AWS Systems Manager untuk menyimpan parameter bersifat secret.
+
+Dengan serverless Anda dapat tidak perlu memikirkan tentang pengelolaan server. Serverless memiliki karakteristik auto-scaling, memiliki high availibility, dan scale-to-zero billing. 
+
+Sehingga memungkinkan Anda untuk fokus ke aplikasi dan memungkinkan untuk rilis dan mendapatkan feedback lebih cepat.
+
+### Pembersihan
+
+Jika Anda menjalankan workshop ini menggunakan akun Anda sendiri maka Anda perlu menghapus resource yang telah dibuat untuk menghindari adanya tagihan biaya.
+
+Anda dapat masuk ke masing-masing halaman layanan untuk menghapusnya. Contohnya masuk Amazon S3 dan menghapus file-file yang ada pada bucket yang digunakan pada workshop ini.
