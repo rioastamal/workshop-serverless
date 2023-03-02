@@ -12,7 +12,8 @@ Pada backend layanan yang digunakan adalah:
 - Amazon API Gateway untuk proxy atau routing ke API
 - Amazon DynamoDB untuk database (NoSQL)
 - Amazon SQS untuk queue
-- Amazon Systems Manager untuk menyimpan parameter secret
+- AWS Systems Manager untuk menyimpan parameter secret
+- Amazon SES untuk mengirim email
 - Amazon S3 untuk menyimpan zip dari fungsi Lambda sebelum deployment
 
 Pada frontend layanan yang digunakan adalah:
@@ -225,7 +226,7 @@ Untuk itu digunakan AWS Systems Manager Parameter Store.
 
 ![Menu Parameter Store](https://user-images.githubusercontent.com/469847/222469823-ed49eb6e-9af1-415e-b7ec-0ef5ead9a2d1.png)
 
-1. Masuk pada halaman [Amazon Systems Manager](https://console.aws.amazon.com/systems-manager/home)
+1. Masuk pada halaman [AWS Systems Manager](https://console.aws.amazon.com/systems-manager/home)
 2. Pada menu **Application Management** pilih **Parameter Store** kemudian **Create parameter**
 3. Pada name isikan &quot;/{{NICKNAME}}/serverless-todo/development/jwt-secret&quot; contoh milik saya **/rioastamal/serverless-todo/development/jwt-secret**
 4. Pada **Tier** pilih **Standard**
@@ -788,7 +789,7 @@ Dapat dilihat ternya kita memiliki masalah permission yaitu fungsi Lambda tidak 
 
 #### Menambahkan Permission ke Fungsi Lambda
 
-Pada aplikasi Node.js yang dibuat tergantung pada beberapa layanan AWS yang lain seperti Amazon DynamoDB, Amazon SES, dan Amazon Systems Manager. Cara yang direkomendasikan untuk memberikan permission adalah dengan konsep [_least-privilege_](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege).
+Pada aplikasi Node.js yang dibuat tergantung pada beberapa layanan AWS yang lain seperti Amazon DynamoDB, Amazon SES, dan AWS Systems Manager. Cara yang direkomendasikan untuk memberikan permission adalah dengan konsep [_least-privilege_](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege).
 
 Artinya permission atau hak ases hanya diberikan seperlunya saja, cukup hanya untuk fungsi tersebut dapat berjalan. Namun pada workshop ini kita akan memberikan permission yang sedikit melebar untuk mempermudah pemahaman.
 
