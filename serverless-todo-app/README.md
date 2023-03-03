@@ -1548,6 +1548,15 @@ Buka kembali halaman frontend.
 
 Jika semua berjalan sukses, maka harusnya data user masuk ke DynamoDB dan email juga terkirim.
 
+<blockquote>
+<b>Atau terjadi error? Jika terjadi error maka tugas Anda untuk memperbaikinya :).</b>
+
+Petunjuk:  
+  
+- Buka Logs dari fungsi Lambda untuk mengetahui error yang terjadi
+- Tambahkan permission yang diperlukan
+</blockquote>
+
   </details>
   <!--Decoupling Email dari Backend-->
 </details>
