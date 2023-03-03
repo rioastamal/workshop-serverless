@@ -130,7 +130,7 @@ Untuk dapat melakukan push pada repository maka Anda perlu membuat SSH key di Cl
 ssh-keygen
 ```
 
-Kosongsi saja password dan langsung tekan ENTER.
+Biarkan kosong untuk semua pertanyaan, tekan saja ENTER.
 
 ```
 Generating public/private rsa key pair.
@@ -202,7 +202,7 @@ Setelah proses selesai harusnya Anda dapat melakukan push ke repository pada aku
 
 Bucket ini akan digunakan untuk menyimpan kode fungsi Lambda yang kemudian akan dideploy lewat halaman console AWS Lambda.
 
-1. Masuk pada halaman Amazon S3. Anda dapat melakukannya lewat inputan _Search_ disisi atas AWS console lalu ketik &quot;S3&quot; - pilih **S3** - pilih **Create bucket**
+1. Masuk pada halaman [Amazon S3](https://s3.console.aws.amazon.com/s3/home). Anda dapat melakukannya lewat inputan _Search_ disisi atas AWS console lalu ketik &quot;S3&quot; - pilih **S3** - pilih **Create bucket**
 2. Pada **Bucket name** isikan &quot;serverless-workshop-{{YYYYMM}}-{{NICKNAME}}&quot;. 
     - Ganti {{YYYYMM}} dengan tahun bulan, misal untuk Maret 2023 gunakan **202303**.
     - Ganti {{NICKNAME}} dengan nama anda atau sesuatu yang unik. Hanya inputkan alphanuric saja, contoh jika nama saya Rio Astamal maka gunakan **rioastamal**.
@@ -239,7 +239,7 @@ Tunggu beberapa saat maka tabel akan siap. Itu ditandai dengan status dari tabel
   <details>
     <summary><h3>Membuat Identity di Amazon SES</h3></summary>
 
-Untuk dapat mengirim email di Amazon SES maka diperlukan identity. Identity ini digunakan ketika proses pengiriman email. Bisa berupa verifikasi domain, subdomain atau email.
+Untuk dapat mengirim email di Amazon Simple Email Service (Amazon SES) maka diperlukan identity. Identity ini digunakan ketika proses pengiriman email. Bisa berupa verifikasi domain, subdomain atau email.
 
 Ketika akun masih berada pada Sandbox maka alamat penerima juga perlu kita masukkan ke verified identity.
 
@@ -247,7 +247,7 @@ Pada langkah ini kita akan membuat dua verified identity email, satu untuk pengi
 
 #### Membuat Identity untuk Pengirim
 
-1. Masuk pada halaman [Amazon SES](https://console.aws.amazon.com/ses/home#/homepage), pilih **Create identity** 
+1. Masuk pada halaman [Amazon SES](https://console.aws.amazon.com/ses/home#/homepage), pilih **Create identity** (atau Pilih menu **Configuration** di samping kiri, pilih **Verified identities**, pilih **Create identity**)
 2. Pada **Identity type** pilih **Email address**
 3. Pada **Email address** isikan &quot;{{EMAIL_ANDA}}+sender@example.com&quot;, contoh adalah **john+sender@gmail.com**
 4. Pilih **Create identity**
@@ -256,7 +256,7 @@ Anda akan menerima email verifikasi dari Amazon SES. Klik link verifikasi terseb
 
 #### Membuat Identity untuk Penerima
 
-1. Pada halaman [Amazon SES](https://console.aws.amazon.com/ses/home#/homepage), pilih **Create identity** 
+1. Masuk pada halaman [Amazon SES](https://console.aws.amazon.com/ses/home#/homepage), pilih **Create identity** (atau Pilih menu **Configuration** di samping kiri, pilih **Verified identities**, pilih **Create identity**)
 2. Pada **Identity type** pilih **Email address**
 3. Pada **Email address** isikan &quot;{{EMAIL_ANDA}}+receiver@example.com&quot;, contoh adalah **john+receiver@gmail.com**
 4. Pilih **Create identity**
@@ -279,7 +279,7 @@ Untuk itu digunakan AWS Systems Manager Parameter Store.
 
 1. Masuk pada halaman [AWS Systems Manager](https://console.aws.amazon.com/systems-manager/home)
 2. Pada menu **Application Management** pilih **Parameter Store** kemudian **Create parameter**
-3. Pada name isikan &quot;/{{NICKNAME}}/serverless-todo/development/jwt-secret&quot; contoh milik saya **/rioastamal/serverless-todo/development/jwt-secret**
+3. Pada **Name** isikan &quot;/{{NICKNAME}}/serverless-todo/development/jwt-secret&quot; contoh milik saya **/rioastamal/serverless-todo/development/jwt-secret**
 4. Pada **Tier** pilih **Standard**
 5. Pada **type** pilih **SecureString**, biarkan opsi lain sesuai bawaan, pada **Value** isikan &quot;workshop-serverless-todo-123456&quot;
 6. Pilih **Create parameter**
@@ -312,13 +312,15 @@ Fungsi ini akan kita integrasikan dengan Amazon API Gateway sebagai proxy/gatewa
 
 Sekarang sebuah fungsi Lambda telah dibuat. Kita akan mencoba menjalankan fungsi tersebut.
 
-![Fungsi Lambda](https://user-images.githubusercontent.com/469847/222486675-fb160107-2c76-4553-850c-68e970beebee.png)
+![Fungsi Lambda](https://user-images.githubusercontent.com/469847/222830710-331677c7-838f-4860-b994-5c2016d8f7e9.png)
 
 #### Membuat Test event
 
 Sebuah fungsi Lambda dieksekusi ketika ada sebuah trigger event tertentu. Kita akan mensimulasikan trigger dari sebuah event yang dikirim oleh API Gateway.
 
-1. Pada tab menu pilih **Test** kemudian akan tampil konfigurasi **Test event**.
+![Tab Test](https://user-images.githubusercontent.com/469847/222831701-07364e7d-e79f-4c3a-8f34-9f7dcc58613e.png)
+
+1. Pada halaman detil fungsi Lambda yang baru dibuat, pilih tab **Test** kemudian akan tampil konfigurasi **Test event**.
 2. Pada **Test event action** pilih **Create new event**
 3. Pada **Event name** isikan **api-gateway-proxy**
 4. Pada **Event sharing settings** pilih **Private**
@@ -346,7 +348,7 @@ exports.main = async (event) => {
 };
 ```
 
-Simpan code tersebut pilih **Deploy** kemudian **Test**. Harusnya respon yang didapat adalah sebuah error.
+Simpan (**File** - **Save**) code tersebut, kemudian pilih **Deploy**, lalu pilih **Test**. Harusnya respon yang didapat adalah sebuah error.
 
 ```json
 {
@@ -365,6 +367,8 @@ Hal itu karena handler fungsi Lambda tersebut dikonfigurasi dengan nilai `index.
 
 Untuk mengatasinya ubah konfigurasi handler dari fungsi Lambda ini.
 
+![Runtime Settings](https://user-images.githubusercontent.com/469847/222832456-f837faa6-b1b9-4146-ab9f-04f0d474930a.png)
+
 1. Pada tab **Code** scroll ke bagian **Runtime settings** lalu pilih **Edit**
 2. Pada bagian **Handler** ganti nilai dari `index.handler` menjadi `index.main`
 3. Pilih tombol **Save** lalu kembali pilih tombol **Test**
@@ -372,6 +376,8 @@ Untuk mengatasinya ubah konfigurasi handler dari fungsi Lambda ini.
 Harusnya sekarang fungsi berjalan normal dan mengembalikan output sesusai dengan isi dari test event **api-gateway-proxy** pada atribut `body`.
 
 ![Execution test result API GW](https://user-images.githubusercontent.com/469847/222489811-e3f9b9d5-da1a-48e9-9f10-e7b65b2eb70c.png)
+
+Dari sini Anda diharapkan memahami korelasi antara konfigurasi Handler di Lambda dan bagaimana harusnya penamaan file dan nama fungsi yang di-export.
 
   </details>
   <!-- /Membuat Fungsi Lambda -->
@@ -457,24 +463,26 @@ Aplikasi ini masih bersifat monolith jadi route path `/{proxy+}` berfungsi sebag
 
 Menjalankan Todo API di AWS Cloud9 sama halnya kita menjalankannya di mesin lokal. Kita akan melakukan clone project todo api yang telah disiapkan.
 
-1. Masuk pada halaman [AWS Cloud9](https://console.aws.amazon.com/cloud9/home)
-2. Pilih **Open** untuk membuka environment yang telah ada sebelumnya
-3. Buka terminal baru jika belum ada, pastikan berada pada `/home/ec2-user/environment`
+1. Jika Cloud9 Anda belum terbuka, maka masuk pada halaman [AWS Cloud9](https://console.aws.amazon.com/cloud9/home), Pilih **Open** untuk membuka environment yang telah ada sebelumnya
+2. Buka terminal baru jika belum ada, pastikan berada pada `/home/ec2-user/environment`
 
 ```sh
 cd ~/environment
 ```
 
-4. Clone project Serverless Todo API
+3. Clone project Serverless Todo API
 
 ```sh
 git clone https://github.com/rioastamal-examples/serverless-todo-express-api.git
 ```
 
-5. Masuk pada direktori project dan install dependencies menggunakan `npm`
+4. Masuk pada direktori project dan install dependencies menggunakan `npm`
 
 ```sh
 cd serverless-todo-express-api
+```
+
+```sh
 npm install --omit=dev
 ```
 
@@ -485,7 +493,7 @@ Untuk menjalankan API kita butuh menyuplai beberapa environment variable yaitu:
 
 Kembali pada terminal di AWS Cloud9. Jalankan perintah ini untuk menset environment variable di Terminal.
 
-> **PENTING**: Sesuaikan nilai dari setiap environment variable ini dengan milik Anda.
+> **PENTING**: Sesuaikan nilai dari setiap environment variable ini dengan milik Anda. Anda dapat menyalin kode dibawah ini ke file baru (tanpa menyimpan) di Cloud9 lakukan perubahan baru paste ke Terminal.
 
 ```sh
 export APP_TABLE_NAME=serverless-todo-{{NICKNAME}}
@@ -544,7 +552,7 @@ Dimana aplikasi akan melakukan bind pada port default `8080`. Object `app` diimp
 
 Selanjutnya mari kita coba melakukan registrasi pengguna. Endpoint yang digunakan adalah `/register`. Pastikan email yang digunakan adalah yang sudah didaftarkan di verified identity karena status Amazon SES masih dalam sandbox.
 
-> **PENTING**: Ganti [EMAIL_PENERIMA] dengan email receiver yang diverifikasi di Amazon SES.
+> **PENTING**: Ganti [EMAIL_PENERIMA] dengan email receiver yang diverifikasi di Amazon SES. Anda dapat menyalin kode dibawah ini ke file baru (tanpa menyimpan) di Cloud9 lakukan perubahan baru paste ke Terminal.
 
 ```sh
 curl -s -D /dev/stderr -H "Content-type: application/json" \
@@ -610,17 +618,21 @@ Keep-Alive: timeout=5
 
 Gunakan token yang didapat sebelumnya pada header `Authorization`. Jalankan perintah untuk membuat environment variable baru `JWT_TOKEN`.
 
+> **PENTING**: Ganti nilai SOME_LONG_JWT_TOKEN dengan nilai token yang anda dapat dari respon /login
+
 ```sh
 export JWT_TOKEN="SOME_LONG_JWT_TOKEN"
 ```
 
 Sekarang buat sebuah todo list sederhana dengan ID &quot;{{NICKNAME}}-1&quot;, dalam contoh saya menggunakan **rioastamal-1**.
 
+> **PENTING**: Anda dapat menyalin dulu perintahnya ke editor di Cloud9 lalu merubah {{NICKNAME}}-1 menjadi nickname anda sendiri baru paste di Terminal.
+
 ```sh
 curl -s -D /dev/stderr -XPUT \
 -H "Content-type: application/json" \
 -H "Authorization: Bearer $JWT_TOKEN" \
-http://localhost:8080/todos/rioastamal-1 -d '
+http://localhost:8080/todos/{{NICKNAME}}-1 -d '
 [
   {
     "id": "todo-1",
@@ -654,11 +666,13 @@ Keep-Alive: timeout=5
 
 Sekarang coba untuk dapatkan Todo item yang baru saja dibuat. Sesuaikan dengan todo ID dan token Anda sendiri.
 
+> **PENTING**: Ganti {{NICKNAME}}-1 dengan milik Anda sendiri yang dimasukkan dari perintah sebelumnya.
+
 ```sh
 curl -s -D /dev/stderr \
 -H "Content-type: application/json" \
 -H "Authorization: Bearer $JWT_TOKEN" \
-http://localhost:8080/todos/rioastamal-1 | jq .
+http://localhost:8080/todos/{{NICKNAME}}-1 | jq .
 ```
 
 ```
@@ -695,6 +709,12 @@ Terdapat dua cara utama untuk mengupload code ke AWS Lambda. Pertama adalah lang
 
 Pastikan Anda berada pada root directory dari project serverless-todo-express-api. Kita akan memaket code API yang ada dalam sebuah zip.
 
+Pastikan Anda berada di direktori project serverless-todo-api jika belum.
+
+```sh
+cd ~/environment/serverless-todo-express-api/
+```
+
 Jalankan perintah berikut untuk mengupload code ke S3 Bucket. Nama bucket saya adalah **serverless-workshop-202303-rioastamal**, sesuaikan milik Anda sendiri.
 
 > PENTING: Ganti [NAMA_BUCKET] dengan S3 bucket yang Anda buat diawal
@@ -720,6 +740,8 @@ Setelah selesai seharusnya terdapat sebuah file zip dengan nama **serverless-tod
 
 Berikutnya kita akan mengupload zip dari bucket tersebut ke fungsi Lambda.
 
+![Upload from](https://user-images.githubusercontent.com/469847/222837918-39f71233-9902-4239-b9a5-b7173fc7d8e8.png)
+
 1. Masuk ke console [AWS Lambda](https://console.aws.amazon.com/lambda/home)
 2. Pilih **Functions** pilih fungsi yang telah dibuat
 3. Pada tab **Code**, pilih **Upload from**, pilih **Amazon S3 location**
@@ -730,12 +752,12 @@ Berikutnya memasukkan nilai ke environment variable.
 1. Masuk halaman fungsi Lambda yang telah dibuat
 2. Pilih tab **Configuration**, pilih **Environment variables**, pilih **Edit**
 3. Pilih **Add environment variable**, masukkan nilai sesuai milik Anda:
-   - Key: `APP_TABLE_NAME`, Value: `serverless-todo-rioastamal`
-   - Key: `APP_PARAMSTORE_JWT_SECRET_NAME`, Value: `/rioastamal/serverless-todo/development/jwt-secret`
+   - Key: `APP_TABLE_NAME`, Value: `serverless-todo-{{NICKNAME}}`
+   - Key: `APP_PARAMSTORE_JWT_SECRET_NAME`, Value: `/{{NICKNAME}}/serverless-todo/development/jwt-secret`
    - Key: `APP_FROM_EMAIL_ADDR`, Value: `EMAIL.ANDA+sender@gmail.com`
 4. Pilih **Save**
 
-![Environment variable](https://user-images.githubusercontent.com/469847/222494388-4e839129-0023-4d2f-a549-308c1f64f582.png)
+![Environment variable](https://user-images.githubusercontent.com/469847/222838527-d173c411-8672-4764-b41e-d7039e42398c.png)
 
 
 #### Mencoba API lewat API Gateway
@@ -745,6 +767,8 @@ Kita akan mencoba apakah API berjalan normal ketika dijalankan di AWS Lambda.
 1. Masuk pada halaman [API Gateway](https://console.aws.amazon.com/apigateway/home)
 2. Pilih API yang telah dibuat, contoh milih saya **serverless-todo-gw-rioastamal**
 3. Copy nilai URL yang ada pada **Invoke URL**
+
+> **PENTING**: Jangan lupa untuk selalu mengganti URL yang ditunjukkan dalam diperintah dengan URL API Gateway Anda sendiri
 
 Kembali pada terminal di AWS Cloud9. Jalankan perintah berikut untuk mencoba API. Ganti URL dengan milik Anda sendiri.
 
@@ -876,7 +900,7 @@ Anda akan dibawa ke halaman IAM untuk mengedit role. Pastikan Anda berada pada h
 8. Centang **AmazonSSMReadOnlyAccess**, pilih **Clear filters**
 9. Pilih **Add permissions**
 
-![Execution role permissions](https://user-images.githubusercontent.com/469847/222496325-3e0e9f60-a1cd-4007-8fd4-8308e5a8a6db.png)
+![Permissions](https://user-images.githubusercontent.com/469847/222842504-8073651e-d387-4ad7-88c6-471ee26ebace.png)
 
 Mari ulangi proses pemanggilan endpoint `/login` yang gagal sebelumnya.
 
