@@ -47,7 +47,9 @@ Ketika mengikuti workshop dengan akun yang disediakan oleh AWS, ikuti langkah-la
 
 ![Email OTP](https://user-images.githubusercontent.com/469847/222732114-f0b5eb15-e118-4530-9ac5-5a4eb67a283f.png)
 
-3. Masukkan email Anda kemudian pilih **Send passcode**
+3. Masukkan email Anda kemudian pilih **Send passcode**. Kemudian cek email Anda untuk melihat OTP yang dikirim.
+
+> **PENTING**: Jika email tidak ditemukan, cek juga di folder spam/junk
 
 ![Email address](https://user-images.githubusercontent.com/469847/222732276-645740a8-5211-47c0-b8d7-a697e2edfb03.png)
 
