@@ -1283,6 +1283,8 @@ Fungsi Lambda ini bertugas untuk memproses pesan yang ada di queue yang dikirim 
 5. Pada **Change default execution role**, pilih **Use an existing role**, pada **Existing role** pilih role yang sebelumnya dibuat, contoh milik saya **service-role/serverles-todo-api-rioastamal-role-RANDOM**
 6. Sisanya biarkan sesuai nilai bawaan, kemudian pilih **Create function**
 
+![Existing role](https://user-images.githubusercontent.com/469847/222845182-9432c93b-1d6c-4121-85a5-d17d12f6ea1f.png)
+
 Kita memilih role yang sebelumnya agar kita tidak perlu melakukan setup ulang permission. Pada kasus production Anda harusnya hanya memberikan permission yang diperlukan saja.
 
 Selanjutnya kita akan mengkonfigurasi environment variable yang diperlukan.
@@ -1298,10 +1300,15 @@ Fungsi Lambda ini perlu untuk mengakses Amazon SQS jadi permission perlu ditamba
 
 1. Masih pada tab **Configuration**, pilih **Permissions**
 2. Pada **Execution Role** pilih **Role name** untuk membuka halaman IAM
+
+Kita akan menambahkan permission agar fungsi Lambda dapat mengakses Amazon SQS.
+
 3. Pilih **Add Permissions**, pilih **Attach policies**
 4. Pada pencarian isikan &quot;SQS&quot; kemudian ENTER
 5. Centang **AWSLambdaSQSQueueExecutionRole** 
 6. Pilih **Add permissions**
+
+![New SQS permission](https://user-images.githubusercontent.com/469847/222846137-4ddd99e2-4fb5-4298-a6cd-2299a72f17b0.png)
 
 Langkah berikutnya adalah integrasi SQS queue dengan fungsi Lambda.
 
@@ -1361,7 +1368,7 @@ Sesuaikan nilainya dengan milik Anda.
 
 ```sh
 export APP_TABLE_NAME=serverless-todo-rioastamal \
-APP_URL=https://qb63qt4402.execute-api.ap-southeast-1.amazonaws.com \
+APP_URL=https://main.d1f7gufsd46hhz.amplifyapp.com \
 APP_FROM_EMAIL_ADDR=EMAIL.ANDA+sender@gmail.com \
 APP_DUMMY_SQS_BODY='{ "username": "workshop-user1" }'
 ```
@@ -1381,13 +1388,33 @@ Pastikan masih berada pada root directory `serverless-todo-email-worker`. Jalank
 > **PENTING**: Ganti [NAMA_BUCKET] dengan S3 bucket yang Anda buat diawal
 
 ```sh
-APP_FUNCTION_BUCKET=[NAMA_BUCKET] \
+export APP_FUNCTION_BUCKET=[NAMA_BUCKET]
+```
+
+```sh
 bash build.sh
 ```
 
+Berikutnya kita akan mengupload zip dari bucket tersebut ke fungsi Lambda.
+
+1. Masuk ke console [AWS Lambda](https://console.aws.amazon.com/lambda/home)
+2. Pilih **Functions** pilih fungsi yang telah dibuat
+3. Pada tab **Code**, pilih **Upload from**, pilih **Amazon S3 location**
+4. Pada **Amazon S3 link URL** isikan dari Object URL dari **serverless-todo-email-worker.zip** yang barusan di upload. Anda dapat melihatnya lewat halaman Amazon S3.
+
+Berikutnya memasukkan nilai ke environment variable.
+
+1. Masih dihalaman fungsi Lambda email worker
+2. Pilih tab **Configuration**, pilih **Environment variables**, pilih **Edit**
+3. Pilih **Add environment variable**, masukkan nilai sesuai milik Anda:
+   - Key: `APP_TABLE_NAME`, Value: `serverless-todo-{{NICKNAME}}`
+   - Key: `APP_URL`, Value: `[Amplify Hosting URL]`
+   - Key: `APP_FROM_EMAIL_ADDR`, Value: `EMAIL.ANDA+sender@gmail.com`
+4. Pilih **Save**
+
 Perlu diingat fungsi utama dari worker email adalah file `src/handlers/main.js` dan nama fungsinya `welcomeEmailSender`. Sehingga Anda perlu mengubah konfigurasi Handler.
 
-1. Masuk pada halaman fungsi Lambda serverless-todo-email-worker
+1. Masih dihalaman fungsi Lambda email worker
 2. Pada tab **Code** bagian **Runtime settings** pilih **Edit**
 3. Pada **Handler** isikan **src/handlers/main.welcomeEmailSender**
 4. Pilih **Save**
@@ -1437,10 +1464,10 @@ Proses decoupling pada sisi API registrasi di project `serverless-todo-api` adal
 
 Pada workshop ini saya sudah menyiapkan code yang sudah jadi di branch yang berbeda yaitu `decoupled-welcome-email`. 
 
-Pada terminal di AWS Cloud9 gunakan perintah berikut untuk melihat remote branch di project `serverless-todo-api`.
+Pada terminal di AWS Cloud9 gunakan perintah berikut untuk melihat remote branch di project `serverless-todo-express-api`.
 
 ```sh
-cd ~/environment/serverless-todo-api
+cd ~/environment/serverless-todo-express-api
 ```
 
 ```sh
