@@ -29,22 +29,51 @@ Layanan lain yang digunakan adalah:
 
 <details>
   <summary><h2>Modul 1 - Persiapan</h2></summary>
+  
+<details>
+    <summary><h3>Melakukan Navigasi di AWS Console</h3></summary>
+
+Secara umum Anda dapat masuk ke halaman sebuah layanan dengan cepat adalah dengan mengetikkan nama layanan pada inputan **Search**.
+
+![Search pada AWS Console](https://user-images.githubusercontent.com/469847/222456956-502b8cdd-1e03-4496-b41b-545daeeab8c5.png)
+
+Kemudian Anda dapat memilih Layanan tersebut dari hasil pencarian. Anda juga dapat membukanya di-Tab browser baru agar memudahkan navigasi kedepan.
+
+![Search AWS Lambda](https://user-images.githubusercontent.com/469847/222457768-0a012b86-d18f-448d-ad06-8df58f9182e2.png)
+
+Jika ingin melakukan bookmark service sehingga selalu tampil di bagian atas pilih tanda **bintang**.
+
+  </details>
+  <!-- /Melakukan Navigasi di AWS Console -->
 
   <details>
   <summary><h3>Menggunakan Cloud IDE AWS Cloud9</h3></summary>
 
-Ketika Anda menjalankan workshop ini pada event yang diselenggarakan oleh tim dari AWS maka Anda akan mendapat setup Cloud9 secara otomatis untuk menjalankan instruksi dalam workshop ini.
+[AWS Cloud9](https://aws.amazon.com/cloud9/) adalah IDE berbasis cloud yang menyediakan fitur text editor, akses ke Terminal untuk menjalankan shell dan built-in debugger. Yang diperlukan untuk menjalankan AWS Cloud9 hanyalah web browser.
 
-Langkah untuk untuk membuka AWS Cloud9
+Pada workshop ini Anda akan menggunakan Cloud9 untuk menjalankan perintah di terminal dan melakukan code editing.
 
-1. Pastikan Anda sudah masuk ke web AWS Console
-2. Pada inputan **Search** ketikkan &quot;cloud9&quot; 
-3. Pilih **Cloud9**
-4. Harusnya ada satu environment, pilih **Open**
+Untuk membuat sebuah environment di Cloud9 ikuti langkah berikut.
+
+1. Masuk ke [AWS Cloud9](https://console.aws.amazon.com/cloud9control/home)
+2. Pilih **Create environment**
+3. Pada **Name** isikan &quot;workshop-{{NICKNAME}}&quot; contoh milik saya **workshop-rioastamal**
+4. Pada **Environment type** pilih **New EC2 instance** pada **Instance type** pilih **t3.small**
+5. Pada **Platform**, pilih **Amazon Linux 2**, **Timeout** pilih **30 minutes**
+6. Pada **Connection** pilih **AWS Systems Manager (SSM)**
+7. Pilih **Create**
+
+Tunggu beberapa saat hingga proses pembuatan environment selesai. Pilih **Open** di sebelah nama environment yang baru dibuat.
+
+![New Cloud9 IDE Environment](https://user-images.githubusercontent.com/469847/222607823-990285f8-ca16-49e4-8a40-707fed4935d8.png)
 
 Anda akan mendapat tampilan Cloud9. Layout default di sebelah kiri adalah file manager, tengah adalah file editor dan di bawah adalah Terminal window.
 
-![Tampilan AWS Cloud9](https://user-images.githubusercontent.com/469847/222454150-8153e5a1-dd1c-4d4f-a236-0c85d85a3484.png)
+![Tampilan AWS Cloud9](https://user-images.githubusercontent.com/469847/222608860-9fcc210e-06a1-4c4d-a897-b5dbf79163c0.png)
+
+> Anda dapat mengubah ukuran masing-masing pane dengan menggeser pada tepian border.
+
+#### Menjalankan Bootstrap Script
 
 Sekarang jalankan perintah berikut di Terminal AWS Cloud9 untuk menginstal beberapa paket yang diperlukan selama workshop.
 
@@ -123,22 +152,6 @@ Setelah proses selesai harusnya Anda dapat melakukan push ke repository pada aku
 
   </details>
   <!-- /Upload Public SSH Key ke GitHub -->
-
-  <details>
-    <summary><h3>Melakukan Navigasi di AWS Console</h3></summary>
-
-Secara umum Anda dapat masuk ke halaman sebuah layanan dengan cepat adalah dengan mengetikkan nama layanan pada inputan **Search**.
-
-![Search pada AWS Console](https://user-images.githubusercontent.com/469847/222456956-502b8cdd-1e03-4496-b41b-545daeeab8c5.png)
-
-Kemudian Anda dapat memilih Layanan tersebut dari hasil pencarian. Anda juga dapat membukanya di-Tab browser baru agar memudahkan navigasi kedepan.
-
-![Search AWS Lambda](https://user-images.githubusercontent.com/469847/222457768-0a012b86-d18f-448d-ad06-8df58f9182e2.png)
-
-Jika ingin melakukan bookmark service sehingga selalu tampil di bagian atas pilih tanda **bintang**.
-
-  </details>
-  <!-- /Melakukan Navigasi di AWS Console -->
 
 </details>
 <hr>
