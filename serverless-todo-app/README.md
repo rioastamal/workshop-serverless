@@ -350,15 +350,16 @@ Konfigurasi berikut akan menghubungkan fungsi Lambda yang dibuat dengan sebuah H
 
 1. Pada **Integrations** pilih **Add Integration**, pilih **Lambda**, **AWS Region** pilih **ap-southeast-1**, **Lambda function** pilih fungsi Lambda yang telah dibuat, **Version** pilih 2.0
 2. Pada **API name** isikan &quot;serverless-todo-gw-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-gw-rioastamal**, pilih **Next**
-3. Kemudian pada bagian routing **Method** pilih **ANY**, **Resource Path** masukkan **/{proxy+}**, **Integration target** pilih fungsi Lambda Anda, pada kasus saya adalah **serverless-todo-api-rioastamal**
-4. Pada konfigurasi stage, pada **Stage name** pilih **$default** dan pastikan **Auto-deploy** aktif
-5. Pada halaman review jika sudah sesuai, pilih **Create**
+3. Kemudian pada bagian routing **Method** pilih **ANY**, **Resource Path** ganti isinya dengan **/{proxy+}**, **Integration target** pilih fungsi Lambda Anda, pada kasus saya adalah **serverless-todo-api-rioastamal**
+4. Pilih **Next**
+5. Pada konfigurasi stage, pada **Stage name** pilih **$default** dan pastikan **Auto-deploy** aktif
+6. Pada halaman review jika sudah sesuai, pilih **Create**
 
 Anda akan dibawa pada halaman detil dari HTTP API. Lihat pada bagian Stage  terdapat **Invoke URL** yang merupakan alamat dari HTTP API. 
 
 ![Invoke URL](https://user-images.githubusercontent.com/469847/222491008-ac4481ab-1604-4af8-a472-6c13d8d8416e.png)
 
-Buka link tersebut untuk mengeksekusi fungsi Lambda yang baru dibuat.Outputnya adalah JSON string yang isinya adalah request yang dikirimkan oleh Amazon API Gateway. Milik saya outputnya seperti berikut.
+Buka link tersebut untuk mengeksekusi fungsi Lambda yang baru dibuat. Outputnya adalah JSON string yang isinya adalah request yang dikirimkan oleh Amazon API Gateway. Milik saya outputnya seperti berikut.
 
 ```json
 {
@@ -444,15 +445,17 @@ Untuk menjalankan API kita butuh menyuplai beberapa environment variable yaitu:
 - `APP_PARAMSTORE_JWT_SECRET_NAME`: nama Parameter Store untuk jwt-secret
 - `APP_FROM_EMAIL_ADDR`: alamat email pengirim yang sudah diverifikasi di Amazon SES
 
-Kembali pada terminal di AWS Cloud9, pastikan Anda berada pada root direktori project jalankan file `local.js`. 
+Kembali pada terminal di AWS Cloud9. Jalankan perintah ini untuk menset environment variable di Terminal.
 
 > **PENTING**: Sesuaikan nilai dari setiap environment variable ini dengan milik Anda.
 
 ```sh
-export APP_TABLE_NAME=serverless-todo-rioastamal
-export APP_PARAMSTORE_JWT_SECRET_NAME=/rioastamal/serverless-todo/development/jwt-secret
+export APP_TABLE_NAME=serverless-todo-{{NICKNAME}}
+export APP_PARAMSTORE_JWT_SECRET_NAME=/{{NICKNAME}}/serverless-todo/development/jwt-secret
 export APP_FROM_EMAIL_ADDR=EMAIL.SAYA+sender@gmail.com
 ```
+
+Kemudian jalankan file `local.js`. 
 
 ```sh
 node local.js
@@ -502,6 +505,8 @@ Dimana aplikasi akan melakukan bind pada port default `8080`. Object `app` diimp
 #### Mencoba Endpoint POST /register
 
 Selanjutnya mari kita coba melakukan registrasi pengguna. Endpoint yang digunakan adalah `/register`. Pastikan email yang digunakan adalah yang sudah didaftarkan di verified identity karena status Amazon SES masih dalam sandbox.
+
+> **PENTING**: Ganti [EMAIL_PENERIMA] dengan email receiver yang diverifikasi di Amazon SES.
 
 ```sh
 curl -s -D /dev/stderr -H "Content-type: application/json" \
@@ -565,13 +570,13 @@ Keep-Alive: timeout=5
 
 #### Mencoba Endpoint PUT /todos/:id
 
-Sekarang buat sebuah todo list sederhana dengan ID &quot;{{NICKNAME}}-1&quot;, dalam contoh saya menggunakan **rioastamal-1**.
-
-Gunakan token yang didapat sebelumnya pada header `Authorization`.
+Gunakan token yang didapat sebelumnya pada header `Authorization`. Jalankan perintah untuk membuat environment variable baru `JWT_TOKEN`.
 
 ```sh
-JWT_TOKEN="SOME_LONG_JWT_TOKEN"
+export JWT_TOKEN="SOME_LONG_JWT_TOKEN"
 ```
+
+Sekarang buat sebuah todo list sederhana dengan ID &quot;{{NICKNAME}}-1&quot;, dalam contoh saya menggunakan **rioastamal-1**.
 
 ```sh
 curl -s -D /dev/stderr -XPUT \
@@ -654,8 +659,15 @@ Pastikan Anda berada pada root directory dari project serverless-todo-express-ap
 
 Jalankan perintah berikut untuk mengupload code ke S3 Bucket. Nama bucket saya adalah **serverless-workshop-202303-rioastamal**, sesuaikan milik Anda sendiri.
 
+> PENTING: Ganti [NAMA_BUCKET] dengan S3 bucket yang Anda buat diawal
+
 ```sh
-export APP_FUNCTION_BUCKET=serverless-workshop-202303-rioastamal
+export APP_FUNCTION_BUCKET=[NAMA_BUCKET]
+```
+
+Lalu jalankan file `build.sh`
+
+```sh
 bash build.sh
 ```
 
