@@ -165,7 +165,7 @@ Setelah proses selesai harusnya Anda dapat melakukan push ke repository pada aku
 Bucket ini akan digunakan untuk menyimpan kode fungsi Lambda yang kemudian akan dideploy lewat halaman console AWS Lambda.
 
 1. Masuk pada halaman Amazon S3. Anda dapat melakukannya lewat inputan _Search_ disisi atas AWS console lalu ketik &quot;S3&quot; - pilih **S3** - pilih **Create bucket**
-2. Pada **Bucket name** isikan &quot;serverless-workshop-{{YYMM}}-{{NICKNAME}}&quot;. 
+2. Pada **Bucket name** isikan &quot;serverless-workshop-{{YYYYMM}}-{{NICKNAME}}&quot;. 
     - Ganti {{YYYYMM}} dengan tahun bulan, misal untuk Maret 2023 gunakan **202303**.
     - Ganti {{NICKNAME}} dengan nama anda atau sesuatu yang unik. Hanya inputkan alphanuric saja, contoh jika nama saya Rio Astamal maka gunakan **rioastamal**.
     - Contoh lengkap untuk nama S3 Bucket **serverless-workshop-202303-rioastamal**
