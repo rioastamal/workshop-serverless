@@ -71,14 +71,14 @@ Anda akan mendapat tampilan Cloud9. Layout default di sebelah kiri adalah file m
 
 ![Tampilan AWS Cloud9](https://user-images.githubusercontent.com/469847/222608860-9fcc210e-06a1-4c4d-a897-b5dbf79163c0.png)
 
-> Anda dapat mengubah ukuran masing-masing pane dengan menggeser pada tepian border.
+> Anda dapat mengubah ukuran masing-masing pane dengan menggeser pada tepian border. Silahkan tutup Welcome file.
 
 #### Menjalankan Bootstrap Script
 
 Sekarang jalankan perintah berikut di Terminal AWS Cloud9 untuk menginstal beberapa paket yang diperlukan selama workshop.
 
 ```sh
-curl -s 'https://gist.githubusercontent.com/rioastamal/e0882594e6b34aedf03a56a6efc0b7c0/raw/c6c2137271e8f402678f4279391b4532296c979a/bootstrap-cloud9-workshop.sh' | bash
+curl -s 'https://gist.githubusercontent.com/rioastamal/e0882594e6b34aedf03a56a6efc0b7c0/raw/12af5c42f3468b284accc8222eab70d2a539db12/bootstrap-cloud9-workshop.sh' | bash
 ```
   </details>
   <!-- /Menggunakan Cloud IDE AWS Cloud9 -->
