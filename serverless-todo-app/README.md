@@ -184,7 +184,7 @@ Harusnya sekarang Anda memiliki bucket baru, contoh milik saya **serverless-work
 
 Kita akan menggunakan Amazon DynamoDB untuk menyimpan data user dan Todo list. Untuk itu Anda perlu membuat sebuah DynamoDB Table baru.
 
-Disini kita hanya menggunakan satu tabel saja dan menerapkan konsep Single Table Design pada DynamoDB.
+Disini kita hanya menggunakan satu tabel saja dan menerapkan konsep [Single Table Design](https://aws.amazon.com/blogs/compute/creating-a-single-table-design-with-amazon-dynamodb/) pada DynamoDB.
 
 1. Masuk pada halaman Amazon DynamoDB. Pada **Search** ketik &quot;dynamodb&quot;, pilih **DynamoDB**, pilih **Create table**
 2. Pada **Table name** isikan &quot;serverless-todo-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-rioastamal**
