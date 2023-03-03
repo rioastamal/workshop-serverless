@@ -267,9 +267,10 @@ Kita akan membuat sebuah fungsi pada AWS Lambda untuk menjalankan aplikasi yang 
 Fungsi ini akan kita integrasikan dengan Amazon API Gateway sebagai proxy/gateway agar bisa diakses dari internet.
 
 1. Pada inputan _Search_ di AWS console ketik &quot;lambda&quot; pilih **Lambda**, pilih **Create a function**
-2. Pada **Function name** isikan &quot;serverless-todo-api-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-api-rioastamal**
-3. Pada **Runtime** pilih **Node.js 16.x** kemudian **Architecture** pilih **x86_64**
-4. Sisanya biarkan sesuai nilai bawaan, kemudian pilih **Create function**
+2. Pilih **Author from scratch**
+3. Pada **Function name** isikan &quot;serverless-todo-api-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-api-rioastamal**
+4. Pada **Runtime** pilih **Node.js 16.x** kemudian **Architecture** pilih **x86_64**
+5. Sisanya biarkan sesuai nilai bawaan, kemudian pilih **Create function**
 
 Sekarang sebuah fungsi Lambda telah dibuat. Kita akan mencoba menjalankan fungsi tersebut.
 
