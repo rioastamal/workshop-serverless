@@ -24,14 +24,50 @@ Layanan lain yang digunakan adalah:
 
 - GitHub sebagai Git repository untuk menyimpan kode yang digunakan pada workshop
 
+![serverless-workshop-monolith](https://user-images.githubusercontent.com/469847/222725705-637cb57b-52b0-4b63-90c9-96065c9cca4c.png)
+
+> Gambaran umum arsitektur aplikasi
+
 <hr>
 <!-- end step-0 -->
 
 <details>
   <summary><h2>Modul 1 - Persiapan</h2></summary>
   
-<details>
-    <summary><h3>Melakukan Navigasi di AWS Console</h3></summary>
+  <details>
+    <summary><h3>Masuk ke AWS Console</h3></summary>
+
+Ketika mengikuti workshop dengan akun yang disediakan oleh AWS, ikuti langkah-langkah berikut untuk masuk ke AWS Console.
+
+1. Buka URL https://dashboard.eventengine.run/. Masukkan code hash yang telah diberikan ke Anda.
+
+![Event Engine Dashboard](https://user-images.githubusercontent.com/469847/222730689-22b6de6d-0d25-4d8c-8679-05f38c8adabb.png)
+
+2. Pilih **Email One-time Password (OTP)**
+
+![Email OTP](https://user-images.githubusercontent.com/469847/222732114-f0b5eb15-e118-4530-9ac5-5a4eb67a283f.png)
+
+3. Masukkan email Anda kemudian pilih **Send passcode**
+
+![Email address](https://user-images.githubusercontent.com/469847/222732276-645740a8-5211-47c0-b8d7-a697e2edfb03.png)
+
+4. Masukkan 9 digit yang dikirim ke email Anda, kemudian pilih **Sign in**
+
+![Passcode](https://user-images.githubusercontent.com/469847/222732419-2a04776d-5230-468a-91b1-a7d3a598f240.png)
+
+5. Pilih **AWS Console**, kemudian **Open Console**
+
+![AWS Console button](https://user-images.githubusercontent.com/469847/222732539-ff826a9b-dc5f-4c47-a428-4a80ef6e6726.png)
+
+![Open Console button](https://user-images.githubusercontent.com/469847/222732664-8d98ce50-8ac1-48b5-923c-679bb6ba86a0.png)
+
+Anda akan dibawa ke halaman dashboard AWS Console.
+
+  </details>
+  <!--Masuk ke AWS Console-->
+  
+  <details>
+    <summary><h3>Contoh Navigasi di AWS Console</h3></summary>
 
 Secara umum Anda dapat masuk ke halaman sebuah layanan dengan cepat adalah dengan mengetikkan nama layanan pada inputan **Search**.
 
@@ -59,7 +95,7 @@ Untuk membuat sebuah environment di Cloud9 ikuti langkah berikut.
 2. Pilih **Create environment**
 3. Pada **Name** isikan &quot;workshop-{{NICKNAME}}&quot; contoh milik saya **workshop-rioastamal**
 4. Pada **Environment type** pilih **New EC2 instance** pada **Instance type** pilih **t3.small**
-5. Pada **Platform**, pilih **Amazon Linux 2**, **Timeout** pilih **30 minutes**
+5. Pada **Platform**, pilih **Amazon Linux 2**, **Timeout** pilih **4 hours**
 6. Pada **Connection** pilih **AWS Systems Manager (SSM)**
 7. Pilih **Create**
 
@@ -71,7 +107,7 @@ Anda akan mendapat tampilan Cloud9. Layout default di sebelah kiri adalah file m
 
 ![Tampilan AWS Cloud9](https://user-images.githubusercontent.com/469847/222608860-9fcc210e-06a1-4c4d-a897-b5dbf79163c0.png)
 
-> Anda dapat mengubah ukuran masing-masing pane dengan menggeser pada tepian border. Silahkan tutup Welcome file.
+> Anda dapat mengubah ukuran masing-masing window pane dengan menggeser pada tepian border. Silahkan tutup Welcome file.
 
 #### Menjalankan Bootstrap Script
 
@@ -862,11 +898,13 @@ etag: W/"e8-CccXfxVNNNmhFbddbNAfsvGxLxI"
 apigw-requestid: BFoUvjRoyQ0EMBg=
 
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IndvcmtzaG9wLXVzZXIxIiwiZW1haWwiOiJhc3RhbWFsLnJpbytyZWNlaXZlckBnbWFpbC5jb20iLCJleHAiOjE2Nzc2OTQ1ODQsImlhdCI6MTY3NzY1MTM4NH0.gvDbKwUrAhVQuoU4vcuhx0ke9iqiNJZHcH0VoAviCOw"
+  "token": "SOME_LONG_JWT_TOKEN"
 }
 ```
 
-Proses berhasil dan mengembalikan JWT token. Sekarang mari coba registrasi pengguna baru. Pastikan email penerima adalah yang sudah di-verifikasi di Amazon SES sebelumnya.
+Proses berhasil dan mengembalikan JWT token. Sekarang mari coba registrasi pengguna baru. 
+
+> **PENTING**: Ganti [EMAIL_PENERIMA] dengan milik Anda. Pastikan email penerima adalah yang sudah di-verifikasi di Amazon SES sebelumnya.
 
 ```sh
 curl -s -D /dev/stderr -H "Content-type: application/json" \
@@ -912,11 +950,12 @@ Pada implementasi CI/CD frontend di AWS Amplify nantinya Anda akan menggunakan r
 1. Pastikan Anda sudah login ke Akun GitHub Anda.
 2. Buka repo [serverless-todo-vue](https://github.com/rioastamal-examples/serverless-todo-vue)
 3. Pilih **Fork** di sisi kanan atas
+
+![Fork button](https://user-images.githubusercontent.com/469847/222701103-77ae5f47-bdf8-4119-af09-f02888f8db8b.png)
+
 4. Biarkan opsi lain sesuai nilai default, Pilih **Create fork**
 
-{{GAMBAR_GITHUB_FORK}}
-
-{{GAMBAR_GITHUB_CREATE_FORK_BUTTON}}
+![Create Fork](https://user-images.githubusercontent.com/469847/222701481-fbb50246-ebe4-42fd-940a-b8c8dc142a67.png)
 
   </details>
   <!--Fork Repository serverless-todo-vue di GitHub-->
@@ -968,9 +1007,9 @@ frontend:
     paths: []
 ```
 
-3. **Build image** biarkan kosong
-4. Buka **Advanced settings** masukkan environment variable berikut.
-    - Key: `API_BASE_URL`, Value: `https://qb63qt4402.execute-api.ap-southeast-1.amazonaws.com` (pastikan untuk mengganti sesuai alamat HTTP API Anda di API Gateway)
+3. Buka **Advanced settings**, biarkan kosong pada **Build image** 
+4. Masukkan environment variable berikut.
+    - Key: `API_BASE_URL`, Value: `[HTTP_API_INVOKE_URL]` (pastikan untuk mengganti sesuai alamat HTTP API Anda di API Gateway)
 5. Pilih **Next**, pilih **Save and deploy**
 
 Tunggu hingga proses build selesai ditandai dengan indikator _Provision_, _Build_, dan _Deploy_ berwarna hijau. Anda dapat memilih salah satu tersebut untuk melihat detil log dari masing-masing.
@@ -1004,11 +1043,11 @@ Fungsi file ini hanya merewrite string `{{API_BASE_URL}}` dengan nilai yang disu
 
 Jika proses build selesai, pilih main untuk melihat detil dari proses build terakhir. Kemudian pilih link URL pada **Domain** untuk membuka aplikasi frontend.
 
-{{GAMBAR_HALAMAN_LOGIN}}
+![Gambar halaman login](https://user-images.githubusercontent.com/469847/222702635-1635d84f-0a09-4f50-9277-0ded19a4e5ea.png)
 
-Aplikasi akan meredirect ke halaman `/login.html` jika pengguna belum melakukan otentikasi. Sebelumnya mencoba login aktifkan dulu debugger tools di web browser Anda dan buka tab Network.
+Aplikasi akan meredirect ke halaman `/login.html` jika pengguna belum melakukan otentikasi. Sebelum mencoba login, aktifkan dulu debugger tools di web browser Anda dan buka tab Network.
 
-{{GAMBAR_HALAMAN_LOGIN_ERROR}}
+![Login error](https://user-images.githubusercontent.com/469847/222702717-72d9cb31-49fc-49bc-8999-6e049b11c475.png)
 
 Hal yang harusnya terjadi adalah proses otentikasi gagal. Jika Anda membuka Debugger tools pada web browser maka pesan error yang muncul karena malasah CORS.
 
@@ -1023,7 +1062,7 @@ Ada dua cara untuk mengatasi masalah CORS ini, Anda mengubah source code dari AP
 5. Pada **Access-Control-Allow-Methods** pilih **\***
 6. Pilih **Save**
 
-{{GAMBAR_KONFIGURASI_CORS}}
+![Konfigurasi CORS](https://user-images.githubusercontent.com/469847/222702848-3b78f73c-ea91-4f31-8b95-94ed115234c7.png)
 
 Kembali ke halaman `/login.html` dan coba ulangi kembali prosesnya. Harusnya sekarang Anda bisa login.
 
@@ -1031,16 +1070,16 @@ Kembali ke halaman `/login.html` dan coba ulangi kembali prosesnya. Harusnya sek
 
 Sekarang Anda harusnya berada pada halaman `/index.html`. Jika belum maka buka halaman tersebut. Ketika anda pertama kali mengakses Todo list ini maka aplikasi akan secara otomatis mencoba membuat Todo kosong dengan ID acak.
 
-{{GAMBAR_TODO_ID_RANDOM}}
+![Random Id](https://user-images.githubusercontent.com/469847/222704021-99f441bc-3a40-402e-800d-59d4d4f922ab.png)
 
 Masih ingat pada langkah [Mencoba Endpoint PUT /todos/:id](#) Anda pernah membuat Todo via CLI di AWS Cloud9? Kita akan coba meng-_update_-nya. Pada contoh tersebut saya membuat todo dengan ID **rioastamal-1**.
 
-1. Pada inputan **Create or update todos** masukkan **rioastamal-1** (ganti sesuai Todo ID yang Anda masukkan sebelumnya) tekan ENTER
+1. Pada inputan **Create or update todos** masukkan **[TODO ID]** (ganti sesuai Todo ID yang Anda masukkan di langkah [mencoba endpoint PUT /todos/:id](#mencoba-endpoint-put-todosid), kemudian tekan ENTER
 2. Akan muncul dua todo item yaitu &quot;Workshop Serverless&quot; dan &quot;Pulang makan&quot;, isikan item todo baru &quot;Tidur&quot; tekan ENTER
 
-{{GAMBAR_INPUT_TODO_ID_LAMA}}
+![Old Todo Id](https://user-images.githubusercontent.com/469847/222704718-ee8cdc08-8750-457c-896d-4e47ce50cefd.png)
 
-{{GAMBAR_INPUT_TODO_TIDUR}}
+![Todo Tidur](https://user-images.githubusercontent.com/469847/222705816-570a7e3c-a241-4e6a-a622-04c3c6f0f0f2.png)
 
 Anda dapat masuk ke halaman [DynamoDB Table](https://console.aws.amazon.com/dynamodbv2/home/#table) yang dibuat sebelumnya untuk melihat data-data yang sudah dimasukkan.
 
@@ -1048,13 +1087,15 @@ Anda dapat masuk ke halaman [DynamoDB Table](https://console.aws.amazon.com/dyna
 
 Untuk mencoba implementasi CI/CD yang ada di Amplify Hosting kita akan mengubah sedikit tampilan dari halaman yang ada dengan menambahkan link di bagian bawah.
 
-Pertama kita akan melakukan clone project serverless-todo-vue dari GitHub terlebih dulu.
+Pertama kita akan melakukan clone project serverless-todo-vue dari akun GitHub Anda masing-masing.
+
+> **PENTING**: Clone dari fork repo Anda, bukan dari repo original rioastamal-examples/serverless-todo-vue.
 
 1. Buka halaman project serverless-todo-vue yang telah anda fork di GitHub
 2. Pilih **Code**, pada pilihan **Clone** di tab **Local** pastikan **SSH** terpilih
 3. Copy repository URL versi SSH tersebut
 
-{{GAMBAR_COPY_HTTPS_REPO}}
+![Clone from fork](https://user-images.githubusercontent.com/469847/222708678-bfa3b90f-bdce-4389-82a1-9f2f5028762d.png)
 
 Masuk pada terminal di AWS Cloud9. Pastikan Anda berada pada direktori `~/environment`.
 
@@ -1065,7 +1106,7 @@ cd ~/environment
 Gunakan perintah `git clone` berikut untuk meng-clone project. Sesuaikan dengan alamat repo Anda sendiri.
 
 ```sh
-git clone git@github.com:rioastamal-examples/serverless-todo-vue.git
+git clone git@github.com:[AKUN_GITHUB_ANDA]/serverless-todo-vue.git
 ```
 
 #### File login.html
@@ -1178,7 +1219,9 @@ Worker untuk mengirim email nantinya akan dijalankan pada AWS Lambda dan Amazon 
 
 Kita dapat mengintegrasikan Amazon SQS dengan AWS Lambda dengan mudah. Dimana jika terdapat pesan baru masuk ke queue di SQS, maka pesan tersebut dapat diteruskan ke sebuah fungsi Lambda.
 
-{{GAMBAR_ARSITEKTUR_BARU}}
+![serverless-workshop-decoupled](https://user-images.githubusercontent.com/469847/222726207-4d658be2-ea93-4ddc-b49a-4a40e6125bce.png)
+
+> Decoupling pengiriman email dari API registrasi
 
   </details>
   <!--Decoupling Proses Registrasi-->
@@ -1208,10 +1251,11 @@ Kemudian pesan ini akan diproses oleh worker dalam hal ini adalah sebuah fungsi 
 Fungsi Lambda ini bertugas untuk memproses pesan yang ada di queue yang dikirim oleh proses registrasi.
 
 1. Masuk pada halaman [AWS Lambda](https://console.aws.amazon.com/lambda/home). kemudian halaman **Functions**, pilih **Create function**
-2. Pada **Function name** isikan &quot;serverless-todo-email-worker-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-email-worker-rioastamal**
-3. Pada **Runtime** pilih **Node.js 16.x** kemudian **Architecture** pilih **x86_64**
-4. Pada **Change default execution role**, pilih **Use an existing role**, pada **Existing role** pilih role yang sebelumnya dibuat, contoh milik saya **service-role/serverles-todo-api-rioastamal-role-RANDOM**
-5. Sisanya biarkan sesuai nilai bawaan, kemudian pilih **Create function**
+2. Pilih **Author from scratch**
+3. Pada **Function name** isikan &quot;serverless-todo-email-worker-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-email-worker-rioastamal**
+4. Pada **Runtime** pilih **Node.js 16.x** kemudian **Architecture** pilih **x86_64**
+5. Pada **Change default execution role**, pilih **Use an existing role**, pada **Existing role** pilih role yang sebelumnya dibuat, contoh milik saya **service-role/serverles-todo-api-rioastamal-role-RANDOM**
+6. Sisanya biarkan sesuai nilai bawaan, kemudian pilih **Create function**
 
 Kita memilih role yang sebelumnya agar kita tidak perlu melakukan setup ulang permission. Pada kasus production Anda harusnya hanya memberikan permission yang diperlukan saja.
 
@@ -1276,7 +1320,7 @@ Worker kemudian akan mengambil pesan tersebut dan melakukan query ke DynamoDB un
 
 #### Mencoba Worker di Lokal
 
-Berbeda dengan code di `serverless-todo-api` di pada worker ini 100% dibuat khusus untuk dijalankan di Lambda sehingga tidak ada proses binding port dan sebagainya. Dapat dilihat pada `src/handlers/main.js`.
+Berbeda dengan code di `serverless-todo-api` pada worker ini 100% dibuat khusus untuk dijalankan di Lambda sehingga tidak ada proses binding port dan sebagainya. Dapat dilihat pada `src/handlers/main.js`.
 
 Untuk menjalankan di lokal Anda perlu memanggil file `local.js`. File ini akan membaca file `event-sqs.sample.json` yang mensimulasikan event dari SQS.
 
@@ -1308,15 +1352,17 @@ Script akan kita paket menjadi zip dan upload ke S3 bucket, kemudian kita impor 
 
 Pastikan masih berada pada root directory `serverless-todo-email-worker`. Jalankan script `build.sh` dan set nilai dari environment variable `APP_FUNCTION_BUCKET` sesuai dengan milik Anda.
 
+> **PENTING**: Ganti [NAMA_BUCKET] dengan S3 bucket yang Anda buat diawal
+
 ```sh
-APP_FUNCTION_BUCKET=serverless-workshop-202303-rioastamal \
+APP_FUNCTION_BUCKET=[NAMA_BUCKET] \
 bash build.sh
 ```
 
 Perlu diingat fungsi utama dari worker email adalah file `src/handlers/main.js` dan nama fungsinya `welcomeEmailSender`. Sehingga Anda perlu mengubah konfigurasi Handler.
 
 1. Masuk pada halaman fungsi Lambda serverless-todo-email-worker
-2. Pada bagian **Runtime settings** pilih **Edit**
+2. Pada tab **Code** bagian **Runtime settings** pilih **Edit**
 3. Pada **Handler** isikan **src/handlers/main.welcomeEmailSender**
 4. Pilih **Save**
 
@@ -1359,9 +1405,9 @@ Jika muncul tulisan **Message sent to workshop-user1** berarti proses berjalan d
   <!--Membuat Welcome Email Worker dengan AWS Lambda-->
 
   <details>
-    <summary><h3>Decoupling Email dari Backend</h3></summary>
+    <summary><h3>Decoupling Email dari API /register</h3></summary>
 
-Proses decoupling pada sisi backend di project `serverless-todo-api` adalah membuang code proses pengiriman email dan menggantinya dengan queue.
+Proses decoupling pada sisi API registrasi di project `serverless-todo-api` adalah membuang code proses pengiriman email dan menggantinya dengan queue.
 
 Pada workshop ini saya sudah menyiapkan code yang sudah jadi di branch yang berbeda yaitu `decoupled-welcome-email`. 
 
@@ -1388,7 +1434,7 @@ Buat branch baru bernama `decoupled-welcome-email` dan masuk pada branch tersebu
 git checkout -b decoupled-welcome-email origin/decoupled-welcome-email
 ```
 
-Sekarang harusnya ada dua branch di local.
+Sekarang harusnya ada dua branch di local. Branch yang aktif adalah `decoupled-welcome-email` ditandai dengan adanya `*`.
 
 ```sh
 git branch
@@ -1417,8 +1463,10 @@ async function sendWelcomeEmail(username)
 
 Pastikan masih berada pada branch `decoupled-welcome-email`. Jalankan perintah untuk build dan upload zip ke S3 bucket. Sesuaikan nama bucket milik Anda.
 
+> **PENTING**: Ganti [NAMA_BUCKET] dengan bucket milik Anda yang dibuat sebelumnya.
+
 ```sh
-APP_FUNCTION_BUCKET=serverless-workshop-202303-rioastamal \
+APP_FUNCTION_BUCKET=[NAMA_BUCKET] \
 bash build.sh
 ```
 
@@ -1433,12 +1481,19 @@ Selanjutnya adalah menambah environment variable baru di fungsi Lambda. Yaitu `A
 1. Masih pada halaman fungsi Lambda yang sama
 2. Pilih tab **Configuration**, pilih **Environment variables**
 3. Pilih **Edit** dan tambahkan environment variable berikut.
-   - **Key**: `APP_SQS_URL`, **Value**: `https://sqs.ap-southeast-1.amazonaws.com/212473567997/serverless-todo-welcome-email-rioastamal` (Ganti dengan milik Anda)
+   - **Key**: `APP_SQS_URL`, **Value**: `[SQS_URL]` (Ganti [SQS_URL] dengan milik Anda)
 4. Pilih **Save**
+
+![SQS URL](https://user-images.githubusercontent.com/469847/222715597-682bd709-ec0e-426a-a9c7-f953b93c6243.png)
 
 Sekarang harusnya proses decoupling pengiriman welcome email dan registrasi selesai.
 
-Buka kembali halaman frontend, navigasi ke `/register.html` untuk mencoba melakukan registrasi user dengan backend yang sudah decoupling dari welcome email.
+Buka kembali halaman frontend.
+
+1. Navigasi ke `/login.html?logout` untuk menghapus token di local storage
+2. Navigasi ke `/register.html` untuk mencoba melakukan registrasi user dengan backend yang sudah decoupling dari welcome email.
+
+Jika semua berjalan sukses, maka harusnya data user masuk ke DynamoDB dan email juga terkirim.
 
   </details>
   <!--Decoupling Email dari Backend-->
