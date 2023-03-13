@@ -1381,7 +1381,7 @@ Push perubahan ke GitHub repository.
 git push origin main
 ```
 
-Ketika push sukses dilakukan sekarang coba masuk ke halaman [AWS Amplify](console.aws.amazon.com/amplify/home). Harusnya proses build sedang berjalan.
+Ketika push sukses dilakukan sekarang coba masuk ke halaman [AWS Amplify](https://console.aws.amazon.com/amplify/home). Harusnya proses build sedang berjalan.
 
 ![Amplify Build](https://user-images.githubusercontent.com/469847/224782010-8534391a-b03d-4b36-a8ff-f773e57c4473.png)
 
@@ -1481,7 +1481,7 @@ Kita akan menambahkan permission agar fungsi Lambda dapat mengakses Amazon SQS.
 
 Langkah berikutnya adalah integrasi SQS queue dengan fungsi Lambda.
 
-1. Masih pada tab **Configuration**, pilih **Triggers*, pilih **Add trigger**
+1. Masih pada tab **Configuration**, pilih ***Triggers**, pilih **Add trigger**
 2. Pada **Trigger configuration** ketik &quot;SQS&quot; lalu pilih **SQS**
 3. Pada **SQS queue** pilih queue yang telah dibuat sebelumnya, milik saya adalah **serverless-todo-welcome-email-rioastamal**
 ![Add SQS Trigger](https://user-images.githubusercontent.com/469847/224788078-551e2d96-29cf-41b2-b1a5-12a13b6c6444.png)
