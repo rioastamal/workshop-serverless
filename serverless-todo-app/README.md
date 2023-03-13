@@ -9,7 +9,7 @@ Pada workshop ini peserta akan membuat sebuah aplikasi todo yang dibangun dengan
 Pada backend layanan yang digunakan adalah:
 
 - AWS Lambda untuk menjalankan kode Node.js
-- Amazon API Gateway untuk proxy atau routing ke API
+- Amazon API Gateway untuk proxy atau routing ke API (Lambda)
 - Amazon DynamoDB untuk database (NoSQL)
 - Amazon SQS untuk queue
 - AWS Systems Manager untuk menyimpan parameter secret
@@ -24,7 +24,7 @@ Layanan lain yang digunakan adalah:
 
 - GitHub sebagai Git repository untuk menyimpan kode yang digunakan pada workshop
 
-![serverless-workshop-monolith](https://user-images.githubusercontent.com/469847/222725705-637cb57b-52b0-4b63-90c9-96065c9cca4c.png)
+![serverless-workshop-monolith](https://user-images.githubusercontent.com/469847/224513703-a4abbd98-a208-4dba-9569-a8dc41d5e688.png)
 
 > Gambaran umum arsitektur aplikasi
 
@@ -37,9 +37,13 @@ Layanan lain yang digunakan adalah:
   <details>
     <summary><h3>Masuk ke AWS Console</h3></summary>
 
-Ketika mengikuti workshop dengan akun yang disediakan oleh AWS, ikuti langkah-langkah berikut untuk masuk ke AWS Console.
+> **PENTING**
+\
+Jika Anda menggunakan akun AWS Anda sendiri maka bisa langsung menuju https://aws.amazon.com/ dan memasukkan credentials Anda untuk masuk ke AWS Console.
 
-1. Buka URL https://dashboard.eventengine.run/. Masukkan code hash yang telah diberikan ke Anda.
+Ketika mengikuti workshop dengan akun AWS yang telah disiapkan, ikuti langkah-langkah berikut untuk masuk ke AWS Console.
+
+1. Buka halaman [workshop portal](https://dashboard.eventengine.run) yang diberikan oleh penyelenggara acara. Masukkan code hash yang telah diberikan ke Anda.
 
 ![Event Engine Dashboard](https://user-images.githubusercontent.com/469847/222730689-22b6de6d-0d25-4d8c-8679-05f38c8adabb.png)
 
@@ -87,7 +91,7 @@ Jika ingin melakukan bookmark service sehingga selalu tampil di bagian atas pili
   <details>
   <summary><h3>Menggunakan Cloud IDE AWS Cloud9</h3></summary>
 
-[AWS Cloud9](https://aws.amazon.com/cloud9/) adalah IDE berbasis cloud yang menyediakan fitur text editor, akses ke Terminal untuk menjalankan shell dan built-in debugger. Yang diperlukan untuk menjalankan AWS Cloud9 hanyalah web browser.
+AWS Cloud9 adalah IDE berbasis cloud yang menyediakan fitur text editor, akses ke Terminal untuk menjalankan shell dan built-in debugger. Yang diperlukan untuk menjalankan AWS Cloud9 hanyalah web browser.
 
 Pada workshop ini Anda akan menggunakan Cloud9 untuk menjalankan perintah di terminal dan melakukan code editing.
 
@@ -95,11 +99,12 @@ Untuk membuat sebuah environment di Cloud9 ikuti langkah berikut.
 
 1. Masuk ke [AWS Cloud9](https://console.aws.amazon.com/cloud9control/home)
 2. Pilih **Create environment**
+![AWS Cloud9 - Create environment](https://user-images.githubusercontent.com/469847/224514038-926afe2e-c4bf-4878-9aa4-f24c7655464f.png)
 3. Pada **Name** isikan &quot;workshop-{{NICKNAME}}&quot; contoh milik saya **workshop-rioastamal**
 4. Pada **Environment type** pilih **New EC2 instance** pada **Instance type** pilih **t3.small**
 5. Pada **Platform**, pilih **Amazon Linux 2**, **Timeout** pilih **4 hours**
-6. Pada **Connection** pilih **AWS Systems Manager (SSM)**
-7. Pilih **Create**
+6. Pada **Network Settings** bagian **Connection** pilih **AWS Systems Manager (SSM)**
+7. Biarkan sisanya sesuai nilai bawaan, pilih **Create**
 
 Tunggu beberapa saat hingga proses pembuatan environment selesai. Pilih **Open** di sebelah nama environment yang baru dibuat.
 
@@ -118,6 +123,27 @@ Sekarang jalankan perintah berikut di Terminal AWS Cloud9 untuk menginstal beber
 ```sh
 curl -s 'https://gist.githubusercontent.com/rioastamal/e0882594e6b34aedf03a56a6efc0b7c0/raw/12af5c42f3468b284accc8222eab70d2a539db12/bootstrap-cloud9-workshop.sh' | bash
 ```
+
+Cek versi mayor dari AWS CLI harusnya 2.x.y.
+
+```sh
+aws --version
+```
+
+```
+aws-cli/2.11.2 Python/3.11.2 Linux/4.14.305-227.531.amzn2.x86_64 exe/x86_64.amzn.2 prompt/off
+```
+
+Cek versi Node harusnya 16.x.y
+
+```sh
+node --version
+```
+
+```
+v16.19.1
+```
+
   </details>
   <!-- /Menggunakan Cloud IDE AWS Cloud9 -->
 
@@ -131,6 +157,8 @@ ssh-keygen
 ```
 
 Biarkan kosong untuk semua pertanyaan, tekan saja ENTER.
+
+> **PENTING**: Perintah ini akan menimpa file ~/.ssh/id_rsa. Perhatikan hal tersebut ketika menjalannya di lokal komputer atau di lingkungan yang sudah ada.
 
 ```
 Generating public/private rsa key pair.
@@ -168,11 +196,17 @@ total 12
 -rw-r--r-- 1 ec2-user ec2-user  407 Feb  21 02:40 id_rsa.pub
 ```
 
-Salin isi dari `~/.ssh/id_rsa.pub`.
+#### Salin isi ~/.ssh/id_rsa.pub
 
 ```sh
 cat ~/.ssh/id_rsa.pub
 ```
+
+```
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCqeyLR64hC6OV1RLldH25q07ZribVthVjgcP0Pa8DXS5bcQDMhbNsTLZyfCsLZJZ8ajzNM2lIEndFGMsrLElWNjMMEnyfOV7AMZ/cyq7ult90RjnYgLUtn6Ju1FFQBCIEm6qlxoYjHR7NVkKqC6akAKe6PVwLsJ2XrmCy+ta1oZVY65pfLqvfg5Q0vFE84kmEldalfNm2aGTWwZeEdJ9ngL+dHPdzW2WRk7GaPBbgzBsqepyplAm5fjPPopWyE1W8Eqzb8iSaTcApBKZLdccZCvRb1bEQFcnL5ToSZzhyyXuZfsVn9U6FpDkqBtzPf9GWXfuXrLzgyuNS1jNJBT+3H ec2-user@ip-172-31-26-248.ap-southeast-1.compute.internal
+```
+
+> **CATATAN**: Isi dari file ~/.ssh/id_rsa.pub Anda pasti berbeda dengan milik saya.
 
 Kita akan memasukkan public key tersebut ke akun GitHub.
 
@@ -187,6 +221,29 @@ Kita akan memasukkan public key tersebut ke akun GitHub.
 6. Pilih **Add SSH key**
 
 Setelah proses selesai harusnya Anda dapat melakukan push ke repository pada akun GitHub Anda.
+
+#### Konfigurasi Nama dan Email untuk Commit
+
+Konfigurasi ini berguna untuk memberi commit nama dan email yang sesuai dengan akun GitHub Anda.
+
+> **PENTING**: Ganti {{NAME}} {{EMAIL}} dengan email yang Anda gunakan pada GitHub.
+
+```
+git config --global user.name "{{NAME}}"
+git config --global user.email "{{EMAIL}}"
+```
+
+```sh
+git config -l
+```
+
+```
+credential.helper=!aws codecommit credential-helper $@
+credential.usehttppath=true
+core.editor=nano
+user.name=Rio Astamal
+user.email={{EMAIL_ANDA}}
+```
 
   </details>
   <!-- /Upload Public SSH Key ke GitHub -->
@@ -203,6 +260,7 @@ Setelah proses selesai harusnya Anda dapat melakukan push ke repository pada aku
 Bucket ini akan digunakan untuk menyimpan kode fungsi Lambda yang kemudian akan dideploy lewat halaman console AWS Lambda.
 
 1. Masuk pada halaman [Amazon S3](https://s3.console.aws.amazon.com/s3/home). Anda dapat melakukannya lewat inputan _Search_ disisi atas AWS console lalu ketik &quot;S3&quot; - pilih **S3** - pilih **Create bucket**
+![Create S3 Bucket](https://user-images.githubusercontent.com/469847/224529647-bb97b18d-ae15-48c2-887a-134c2edd6d87.png)
 2. Pada **Bucket name** isikan &quot;serverless-workshop-{{YYYYMM}}-{{NICKNAME}}&quot;. 
     - Ganti {{YYYYMM}} dengan tahun bulan, misal untuk Maret 2023 gunakan **202303**.
     - Ganti {{NICKNAME}} dengan nama anda atau sesuatu yang unik. Hanya inputkan alphanuric saja, contoh jika nama saya Rio Astamal maka gunakan **rioastamal**.
@@ -225,14 +283,38 @@ Kita akan menggunakan Amazon DynamoDB untuk menyimpan data user dan Todo list. U
 Disini kita hanya menggunakan satu tabel saja dan menerapkan konsep [Single Table Design](https://aws.amazon.com/blogs/compute/creating-a-single-table-design-with-amazon-dynamodb/) pada DynamoDB.
 
 1. Masuk pada halaman Amazon DynamoDB. Pada **Search** ketik &quot;dynamodb&quot;, pilih **DynamoDB**, pilih **Create table**
+![Create DynamoDB table](https://user-images.githubusercontent.com/469847/224529867-c0ef7861-66d7-46a6-b7b2-b53bfb60e400.png)
 2. Pada **Table name** isikan &quot;serverless-todo-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-rioastamal**
 3. Pada **Partition key** isikan &quot;pk&quot; dengan tipe **String**
 4. Pada **Sort key** isikan &quot;sk&quot; dengan tipe **String**
-4. Biarkan opsi lainnya dengan nilai bawaan, kemudian pilih tombol **Create table**
+4. Biarkan opsi lainnya sesuai nilai bawaan, kemudian pilih tombol **Create table**
 
 Tunggu beberapa saat maka tabel akan siap. Itu ditandai dengan status dari tabel yaitu **Active**.
 
 ![DynamoDB table](https://user-images.githubusercontent.com/469847/222465947-8233779f-3f5c-421c-a3ba-1bcd58793f1a.png)
+
+#### Contoh data
+
+Pada aplikasi yang dibuat semua item akan diidentifikasi dari kombinasi `pk` dan `sk`. Format dari data untuk user adalah:
+
+pk | sk
+---|---
+user#{{USERNAME}} | user
+
+Format data untuk todo adalah:
+
+pk | sk
+---|---
+todo#{{TODO_ID}} | todo#{{USERNAME}}
+
+Berikut contoh item-item pada tabel.
+
+pk | sk | data | created_at
+---|----|------|-----------
+user#rioastamal | user | `{ "username": "rioastamal", "password": "...", "fullname": "Rio Astamal", ... }` | 2023-02-22T00:32:43.255Z
+todo#workshop123 | todo#rioastamal | `[{ "id": "todo-1", "title": "Create serverless workshop", "completed": false }]` | 2023-02-22T00:34:43.255Z
+
+Pada DynamoDB jumlah kolom dan tipe data dari setiap item tidak harus sama, kecuali kolom `pk` dan `sk` yang harus selalu ada karena merupakan partition key dan sort key.
   </details>
   <!-- /Membuat DynamoDB Table -->
 
@@ -248,6 +330,7 @@ Pada langkah ini kita akan membuat dua verified identity email, satu untuk pengi
 #### Membuat Identity untuk Pengirim
 
 1. Masuk pada halaman [Amazon SES](https://console.aws.amazon.com/ses/home#/homepage), pilih **Create identity** (atau Pilih menu **Configuration** di samping kiri, pilih **Verified identities**, pilih **Create identity**)
+![Create SES Identity](https://user-images.githubusercontent.com/469847/224530183-fc02c8d0-4027-4929-bae7-9914414a5235.png)
 2. Pada **Identity type** pilih **Email address**
 3. Pada **Email address** isikan &quot;{{EMAIL_ANDA}}+sender@example.com&quot;, contoh adalah **john+sender@gmail.com**
 4. Pilih **Create identity**
@@ -259,11 +342,11 @@ Anda akan menerima email verifikasi dari Amazon SES. Klik link verifikasi terseb
 1. Masuk pada halaman [Amazon SES](https://console.aws.amazon.com/ses/home#/homepage), pilih **Create identity** (atau Pilih menu **Configuration** di samping kiri, pilih **Verified identities**, pilih **Create identity**)
 2. Pada **Identity type** pilih **Email address**
 3. Pada **Email address** isikan &quot;{{EMAIL_ANDA}}+receiver@example.com&quot;, contoh adalah **john+receiver@gmail.com**
-4. Pilih **Create identity**
+4. Biarkan isian lainnya sesuai bawaan, pilih **Create identity**
 
 Cek email Anda untuk link verifikasi. Setelah proses verifikasi selesai harusnya Anda memiliki dua verified identity dari satu alamat email.
 
-![Amazon SES verified identity](https://user-images.githubusercontent.com/469847/222467155-2d4ee579-e4dc-4a1b-b212-b292a792ce37.png)
+![Amazon SES verified identity](https://user-images.githubusercontent.com/469847/224512646-dd4c033c-8fd9-42d0-99f2-d26d3251b21d.png)
   
   </details>
   <!-- /Membuat Identity di Amazon SES -->
@@ -275,14 +358,15 @@ API menggunakan JWT untuk proses otentikasi. Dalam proses pembuatan JWT token di
 
 Untuk itu digunakan AWS Systems Manager Parameter Store.
 
-![Menu Parameter Store](https://user-images.githubusercontent.com/469847/222469823-ed49eb6e-9af1-415e-b7ec-0ef5ead9a2d1.png)
-
 1. Masuk pada halaman [AWS Systems Manager](https://console.aws.amazon.com/systems-manager/home)
 2. Pada menu **Application Management** pilih **Parameter Store** kemudian **Create parameter**
+![Menu Parameter Store](https://user-images.githubusercontent.com/469847/224530635-5a4ee600-4374-4d93-9383-99b6ea9334dc.png)
 3. Pada **Name** isikan &quot;/{{NICKNAME}}/serverless-todo/development/jwt-secret&quot; contoh milik saya **/rioastamal/serverless-todo/development/jwt-secret**
 4. Pada **Tier** pilih **Standard**
-5. Pada **type** pilih **SecureString**, biarkan opsi lain sesuai bawaan, pada **Value** isikan &quot;workshop-serverless-todo-123456&quot;
+5. Pada **type** pilih **SecureString**, biarkan opsi lain sesuai bawaan, pada **Value** isikan &quot;_workshop-serverless-todo-123456_&quot;
 6. Pilih **Create parameter**
+
+> **PENTING**: Pada production nilai dari jwt-secret ini harusnya karakter yang random. Contoh dapat menggunakan OpenSSL seperti `openssl rand -base64 48`.
 
 Kita akan mengambil dan menggunakan nilai parameter pada code Node.js yang diperlukan oleh API.
 
@@ -305,6 +389,7 @@ Kita akan membuat sebuah fungsi pada AWS Lambda untuk menjalankan aplikasi yang 
 Fungsi ini akan kita integrasikan dengan Amazon API Gateway sebagai proxy/gateway agar bisa diakses dari internet.
 
 1. Pada inputan _Search_ di AWS console ketik &quot;lambda&quot; pilih **Lambda**, pilih **Create a function**
+![Create a Lambda function](https://user-images.githubusercontent.com/469847/224604692-ceb202c9-e360-4ea8-b843-a54c58f58d4d.png)
 2. Pilih **Author from scratch**
 3. Pada **Function name** isikan &quot;serverless-todo-api-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-api-rioastamal**
 4. Pada **Runtime** pilih **Node.js 16.x** kemudian **Architecture** pilih **x86_64**
@@ -318,9 +403,8 @@ Sekarang sebuah fungsi Lambda telah dibuat. Kita akan mencoba menjalankan fungsi
 
 Sebuah fungsi Lambda dieksekusi ketika ada sebuah trigger event tertentu. Kita akan mensimulasikan trigger dari sebuah event yang dikirim oleh API Gateway.
 
-![Tab Test](https://user-images.githubusercontent.com/469847/222831701-07364e7d-e79f-4c3a-8f34-9f7dcc58613e.png)
-
 1. Pada halaman detil fungsi Lambda yang baru dibuat, pilih tab **Test** kemudian akan tampil konfigurasi **Test event**.
+![Tab Test](https://user-images.githubusercontent.com/469847/222831701-07364e7d-e79f-4c3a-8f34-9f7dcc58613e.png)
 2. Pada **Test event action** pilih **Create new event**
 3. Pada **Event name** isikan **api-gateway-proxy**
 4. Pada **Event sharing settings** pilih **Private**
@@ -363,11 +447,11 @@ Simpan (**File** - **Save**) code tersebut, kemudian pilih **Deploy**, lalu pili
 }
 ```
 
-Hal itu karena handler fungsi Lambda tersebut dikonfigurasi dengan nilai `index.handler`. Artinya AWS Lambda akan menjalankan fungsi `handler` pada file `index.js`. Kita telah mengganti fungsinya dari `exports.handler` ke `exports.main` sehingga error tersebut terjadi.
+Hal itu karena handler fungsi Lambda tersebut dikonfigurasi dengan nilai `index.handler`. Artinya AWS Lambda akan menjalankan method `handler` yang di-export oleh file `index.js`. Kita telah mengganti method-nya dari `exports.handler` ke `exports.main` sehingga error tersebut terjadi.
 
 Untuk mengatasinya ubah konfigurasi handler dari fungsi Lambda ini.
 
-![Runtime Settings](https://user-images.githubusercontent.com/469847/222832456-f837faa6-b1b9-4146-ab9f-04f0d474930a.png)
+![Runtime Settings](https://user-images.githubusercontent.com/469847/224609215-55383930-89be-40a9-8e7c-193fb8872f0a.png)
 
 1. Pada tab **Code** scroll ke bagian **Runtime settings** lalu pilih **Edit**
 2. Pada bagian **Handler** ganti nilai dari `index.handler` menjadi `index.main`
@@ -377,7 +461,7 @@ Harusnya sekarang fungsi berjalan normal dan mengembalikan output sesusai dengan
 
 ![Execution test result API GW](https://user-images.githubusercontent.com/469847/222489811-e3f9b9d5-da1a-48e9-9f10-e7b65b2eb70c.png)
 
-Dari sini Anda diharapkan memahami korelasi antara konfigurasi Handler di Lambda dan bagaimana harusnya penamaan file dan nama fungsi yang di-export.
+Dari sini Anda diharapkan memahami korelasi antara konfigurasi Handler di Lambda dan bagaimana harusnya penamaan file dan nama method yang di-export.
 
   </details>
   <!-- /Membuat Fungsi Lambda -->
@@ -389,15 +473,19 @@ Amazon API Gateway akan bertindak sebagai router yang mengarahkan request ke fun
 
 1. Masuk pada halaman Amazon API Gateway. Pada inputan _Search_ AWS console lalu ketik &quot;api gateway&quot; - pilih **API Gateway** 
 2. Pada **Choose an API type** pilih **HTTP API** kemudian pilih **Build**
+![Create a HTTP API](https://user-images.githubusercontent.com/469847/224609729-610c23cd-644b-4745-a890-48ff907feb95.png)
 
 Konfigurasi berikut akan menghubungkan fungsi Lambda yang dibuat dengan sebuah HTTP API.
 
 1. Pada **Integrations** pilih **Add Integration**, pilih **Lambda**, **AWS Region** pilih **ap-southeast-1**, **Lambda function** pilih fungsi Lambda yang telah dibuat, **Version** pilih 2.0
 2. Pada **API name** isikan &quot;serverless-todo-gw-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-gw-rioastamal**, pilih **Next**
+![Create API Gateway Step 1](https://user-images.githubusercontent.com/469847/224610349-940312cf-afdf-4ebc-86f6-5d75cc7e05be.png)
 3. Kemudian pada bagian routing **Method** pilih **ANY**, **Resource Path** ganti isinya dengan **/{proxy+}**, **Integration target** pilih fungsi Lambda Anda, pada kasus saya adalah **serverless-todo-api-rioastamal**
 4. Pilih **Next**
+![Create API Gateway Step 2](https://user-images.githubusercontent.com/469847/224611110-e17059b2-ca7e-486c-8658-a0843bde0be0.png)
 5. Pada konfigurasi stage, pada **Stage name** pilih **$default** dan pastikan **Auto-deploy** aktif
 6. Pada halaman review jika sudah sesuai, pilih **Create**
+![Create API Gateway Review Step](https://user-images.githubusercontent.com/469847/224612157-2585f6a0-b846-4ada-a413-21143da2330d.png)
 
 Anda akan dibawa pada halaman detil dari HTTP API. Lihat pada bagian Stage  terdapat **Invoke URL** yang merupakan alamat dari HTTP API. 
 
@@ -511,7 +599,11 @@ node local.js
 API server running on port 8080
 ```
 
+> **PENTING**: Selama mencoba API yang dijalankan lewat `node local.js` jika Anda menemui error "_ExpiredTokenException: The security token included in the request is expired_" maka kembali ke tab terminal yang menjalankan `node local.js` tekan CTRL+C untuk menghentikan server dan jalankan ulang `node local.js`. Harusnya sekarang call API sudah tidak mengembalikan error tersebut.
+
 Buka terminal session baru pada AWS Cloud9 dengan memilih tanda plus **+** kemudian pilih **New Terminal**. Pada terminal baru tersebut jalankan perintah berikut untuk mengetes respon API di endpoint `/protected`.
+
+![Cloud9 open new terminal](https://user-images.githubusercontent.com/469847/224682926-a01b3508-85bd-4be2-88d1-c97026eb2581.png)
 
 ```sh
 curl -s -D /dev/stderr http://localhost:8080/protected | jq .
@@ -584,7 +676,7 @@ Cek email untuk memastikan API telah mengirim welcome email. Provider email mung
 
 Hal ini tidak masalah karena kita hanya melakukan tes. Jadi pastikan untuk cek juga di folder spam/junk.
 
-![Welcome email inbox](https://user-images.githubusercontent.com/469847/222492366-122fbd66-440e-4e7c-a7b2-33bf123ea265.png)
+![Welcome email inbox](https://user-images.githubusercontent.com/469847/224705316-3c4d0fc3-df5d-4311-925d-baf2d964706d.png)
 
 #### Mencoba Endpoint POST /login
 
@@ -701,11 +793,33 @@ Keep-Alive: timeout=5
 
   </details>
   <!--Menjalankan Todo API di AWS Cloud9-->
+  
+  <details>
+    <summary><h3>Melihat Data di DynamoDB</h3></summary>
+
+Kita telah melakukan beberapa operasi penulisan data yaitu ketika memanggil endpoint `POST /register` dan `PUT /todos/:id`. Mungkin Anda ingin melihat bagaimana data tersebut disimpan pada tabel di DynamoDB.
+
+1. Masuk ke halaman console DynamoDB.
+2. Pilih **Explore Items** dari menu di samping, pada **Tables** pilih tabel yang Anda buat, contoh milih saya **serverless-todo-rioastamal**
+3. Pada **Scan or query items**, pilih **Scan**
+4. Pilih **Run** untuk menampilkan semua item di tabel tersebut
+![Scan Items DynamoDB](https://user-images.githubusercontent.com/469847/224723567-43cbd31e-ec7c-404c-a872-e475f14a25d2.png)
+
+Hasil akan ditampilkan pada bagian **Items returned**. Pada contoh harusnya terdapat dua item yaitu sebuah data user dan sebuah todo. Pilih item todo yang dibuat untuk melihat detil dari item tersebut.
+
+![Item on DynamoDB](https://user-images.githubusercontent.com/469847/224724397-5548394b-555c-4fc8-a628-e7f1dda2c916.png)
+
+Anda akan dibawa ke halaman detil dari item yang berupa sebuah JSON. Anda dapat melakukan edit item tersebut jika mau. Namun pada contoh ini pilih **Cancel** untuk menutup kembali halaman detil item.
+
+> **PENTING**: Pada production perintah **Scan** tidak direkomendasikan karena akan membaca seluruh tabel. Hal itu tidak masalah jika jumlah datanya kecil, namun jika jumlah data besar akan berpengaruh pada pemrosesan dan biaya. Selalu gunakan **[Query](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html)** jika dimungkinkan. 
+  </details>
 
   <details>
     <summary><h3>Deploy Code ke AWS Lambda</h3></summary>
 
 Terdapat dua cara utama untuk mengupload code ke AWS Lambda. Pertama adalah langsung dari komputer lokal Anda atau dari S3 Bucket. Kita akan menggunakan cara yang disebut kedua. File yang diupload dalam format zip.
+
+Handler yang akan digunakan oleh fungsi Lambda ini adalah method `main` pada file `lambda.js`.
 
 Pastikan Anda berada pada root directory dari project serverless-todo-express-api. Kita akan memaket code API yang ada dalam sebuah zip.
 
@@ -728,6 +842,22 @@ Lalu jalankan file `build.sh`
 ```sh
 bash build.sh
 ```
+
+```
+Downloading app dependencies...
+
+added 156 packages, and audited 157 packages in 3s
+
+8 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+Creating zip...
+Uploading zip to S3 Bucket...
+upload: .build/tmp/serverless-todo-api.zip to s3://serverless-workshop-202303-rioastamal/serverless-todo-api.zip
+```
+
+> CATATAN: File dan direktori yang dipaket dalam zip adalah <br>- `src/`<br>- `node_modules/`<br>- `lambda.js`
 
 Setelah selesai seharusnya terdapat sebuah file zip dengan nama **serverless-todo-api.zip** pada bucket.
 
@@ -757,8 +887,7 @@ Berikutnya memasukkan nilai ke environment variable.
    - Key: `APP_FROM_EMAIL_ADDR`, Value: `EMAIL.ANDA+sender@gmail.com`
 4. Pilih **Save**
 
-![Environment variable](https://user-images.githubusercontent.com/469847/222838527-d173c411-8672-4764-b41e-d7039e42398c.png)
-
+![Environment variable](https://user-images.githubusercontent.com/469847/224726513-6ca251d2-dd19-476e-bd68-4886a398f193.png)
 
 #### Mencoba API lewat API Gateway
 
@@ -770,11 +899,14 @@ Kita akan mencoba apakah API berjalan normal ketika dijalankan di AWS Lambda.
 
 > **PENTING**: Jangan lupa untuk selalu mengganti URL yang ditunjukkan dalam diperintah dengan URL API Gateway Anda sendiri
 
-Kembali pada terminal di AWS Cloud9. Jalankan perintah berikut untuk mencoba API. Ganti URL dengan milik Anda sendiri.
+Kembali pada terminal di AWS Cloud9. Jalankan perintah berikut untuk mencoba API. Ganti URL `{{INVOKE_URL}}` dengan milik Anda sendiri.
 
 ```sh
-curl -s -D /dev/stderr \
-https://qb63qt4402.execute-api.ap-southeast-1.amazonaws.com/protected | jq .
+export INVOKE_URL={{INVOKE_URL}}
+```
+
+```sh
+curl -s -D /dev/stderr $INVOKE_URL/protected | jq .
 ```
 
 ```
@@ -791,7 +923,9 @@ apigw-requestid: BFWUKhzKSQ0EPVw=
 
 Oops, kenapa ya? Masih ingat korelasi antara Handler pada Runtime settings di Lambda dan nama file Javascript?
 
-Terakhir kali kita ubah nilainya menjadi `index.main` yang artinya Lambda akan coba mencari file `index.js` dan memanggil fungsi `main`. Sedangkan aplikasi kita sekarang menggunakan file `lambda.js` dan fungsi yang perlu dipanggil adalah `handler`.
+Terakhir kali kita ubah nilainya menjadi `index.main` yang artinya Lambda akan coba mencari file `index.js` dan memanggil method `main`. Sedangkan aplikasi kita sekarang menggunakan file `lambda.js` dan method yang perlu dipanggil adalah `handler`.
+
+> **PENTING**: Selalu ingat hubungan antara Handler pada fungsi Lambda dan korelasinya dengan nama file dan nama method yang di-export.
 
 Ya, kita harus mengganti konfigurasi Runtime Lambda.
 
@@ -809,15 +943,14 @@ const serverless = require('serverless-http');
 exports.handler = serverless(app);
 ```
 
-Pada code diatas kita mengimpor object `app` dari file utama yaitu `index.js`. Aplikasi tidak melakukan bind ke port seperti pada lokal. Namun hanya mengekspor sebuah fungsi pada atribut `handler`.
+Pada code diatas kita mengimpor object `app` dari file utama yaitu `index.js`. Aplikasi tidak melakukan bind ke port seperti pada file `local.js`. Namun hanya mengekspor sebuah fungsi pada atribut `handler`.
 
 Kita memanfaatkan library [serverless-http](https://www.npmjs.com/package/serverless-http) untuk mengubah perilaku dari request/response Lambda ke bentuk HTTP request normal yang dimengerti oleh express.
 
 Sekarang pada terminal di AWS Cloud9 coba ulangi request yang gagal tadi. Harusnya sekarang sudah bisa. Ganti URL dengan milik Anda sendiri.
 
 ```sh
-curl -s -D /dev/stderr \
-https://qb63qt4402.execute-api.ap-southeast-1.amazonaws.com/protected | jq .
+curl -s -D /dev/stderr $INVOKE_URL/protected | jq .
 ```
 
 ```
@@ -838,8 +971,7 @@ Jika mendapat 401 maka API merespon dengan benar. Sekarang coba login ke API.
 
 ```sh
 curl -s -D /dev/stderr -H "Content-type: application/json" \
-https://qb63qt4402.execute-api.ap-southeast-1.amazonaws.com/login \
- -d '
+$INVOKE_URL/login -d '
 {
   "username": "workshop-user1",
   "password": "workshop123"
@@ -854,24 +986,11 @@ content-length: 35
 apigw-requestid: BFhBkioASQ0EPXQ=
 
 {
-  "message": "Internal Server Error"
+  "message": "AccessDeniedException: User: arn:aws:sts::ACCOUNT_ID:assumed-role/serverless-todo-api-rioastamal-role-lgl95shr/serverless-todo-api-rioastamal is not authorized to perform: dynamodb:GetItem on resource: arn:aws:dynamodb:ap-southeast-1:ACCOUNT_ID:table/serverless-todo-rioastamal because no identity-based policy allows the dynamodb:GetItem action"
 }
 ```
 
-Ooops error apa lagi ini. Mari kita troubleshoot.
-
-1. Masuk pada halaman fungsi Lambda yang dibuat
-2. Pilih tab **Monitor**, pilih **Logs**
-3. Pada **Recent invocations** pilih log paling baru pada kolom **LogStream**
-
-Anda akan dibawa ke halaman Amazon CloudWatch. Pada **Log Events** pada salah satu baris harusnya terdapat error yang mirip seperti berikut.
-
-```
-{
-    "errorType": "Runtime.UnhandledPromiseRejection",
-    "errorMessage": "AccessDeniedException: User: arn:aws:sts::212473567997:assumed-role/serverless-todo-api-rioastamal-role-pkqnzkp3/serverless-todo-api-rioastamal is not authorized to perform: dynamodb:GetItem on resource: arn:aws:dynamodb:ap-southeast-1:212473567997:table/serverless-todo-development because no identity-based policy allows the dynamodb:GetItem action",
-...
-```
+Ooops error apa lagi ini.
 
 Dapat dilihat ternya kita memiliki masalah permission yaitu fungsi Lambda tidak memiliki permission untuk memanggil API **dynamodb:GetItem**. Kita akan memperbaiki masalah ini.
 
@@ -887,10 +1006,12 @@ Langkah untuk menambahkan permission pada fungsi Lambda.
 2. Pilih tab **Configuration**, pilih **Permissions**
 3. Pada bagian **Execution role** terdapat **Role name** yang digunakan oleh fungsi Lambda kita.
 4. Pilih role tersebut, contohnya **serverless-todo-api-rioastamal-role-pkqnzkp3**
+![Execution role](https://user-images.githubusercontent.com/469847/224752239-a20c0757-9dd3-4152-ad64-a1dde9a92f84.png)
 
 Anda akan dibawa ke halaman IAM untuk mengedit role. Pastikan Anda berada pada halaman **Summary** dari role ini.
 
 1. Pada tab **Permissions** pilih **Add permissions**
+![Function roles](https://user-images.githubusercontent.com/469847/224753234-d42de7bc-5b93-49c8-bb7d-c3ef972e1dfd.png)
 2. Pilih **Attach policies**
 3. Pada **Other permissions policies** ketik **dynamodb** lalu ENTER
 4. Centang **AmazonDynamoDBFullAccess**, pilih **Clear filters**
@@ -906,8 +1027,7 @@ Mari ulangi proses pemanggilan endpoint `/login` yang gagal sebelumnya.
 
 ```sh
 curl -s -D /dev/stderr -H "Content-type: application/json" \
-https://qb63qt4402.execute-api.ap-southeast-1.amazonaws.com/login \
- -d '
+$INVOKE_URL/login -d '
 {
   "username": "workshop-user1",
   "password": "workshop123"
@@ -934,7 +1054,7 @@ Proses berhasil dan mengembalikan JWT token. Sekarang mari coba registrasi pengg
 
 ```sh
 curl -s -D /dev/stderr -H "Content-type: application/json" \
-https://qb63qt4402.execute-api.ap-southeast-1.amazonaws.com/register -d '
+$INVOKE_URL/register -d '
 {
   "username": "workshop-user2",
   "password": "workshop123",
@@ -1003,7 +1123,9 @@ Pastikan Anda sudah melakukan fork repository serverless-vue-todo.
 
 1. Masuk ke halaman [AWS Amplify](https://console.aws.amazon.com/amplify/home)
 2. Pilih **GET STARTED**
+![Amplify Get Started](https://user-images.githubusercontent.com/469847/224765306-67f1931f-c120-45f2-9a42-aebbd5462905.png)
 3. Pada bagian Amplify Hosting pilih **Get started**
+![Web App Get Started](https://user-images.githubusercontent.com/469847/224765332-6c745d3f-e6c6-457c-9fd5-3fa9a97a8a36.png)
 4. Pilih **GitHub**, pilih **Continue**
 
 Amplify Hosting memerlukan akses read pada repository yang ingin diintegrasikan. Akan muncul dialog bahwa AWS Amplify memerlukan permission untuk mengakses repository.
@@ -1012,6 +1134,7 @@ Amplify Hosting memerlukan akses read pada repository yang ingin diintegrasikan.
 2. (Jika repository tidak muncul) Pilih **View GitHub permissions**, pilih akun GitHub tempat repository berada, pilih **All repositories**, pilih **Install & Authorize**
 3. Pada halaman Add repository branch, pada Recently updated repositories pilih repository **serverless-todo-vue**
 4. Pada **Branch** pilih **main**, pilih **Next**
+![Add GitHub Repository](https://user-images.githubusercontent.com/469847/224766571-3dfc8144-cf18-4338-943e-36b06360902f.png)
 
 Selanjutnya akan muncul halaman Build Settings dimana Anda dapat mengkonfigurasi bagaimana aplikasi di-build.
 
@@ -1035,10 +1158,12 @@ frontend:
 
 3. Buka **Advanced settings**, biarkan kosong pada **Build image** 
 4. Masukkan environment variable berikut.
-    - Key: `API_BASE_URL`, Value: `[HTTP_API_INVOKE_URL]` (pastikan untuk mengganti sesuai alamat HTTP API Anda di API Gateway)
+    - Key: `API_BASE_URL`, Value: `[HTTP_API_INVOKE_URL]` (pastikan untuk mengganti sesuai alamat HTTP API Anda di API Gateway, tanpa akhiran slash "/")
 5. Pilih **Next**, pilih **Save and deploy**
 
 Tunggu hingga proses build selesai ditandai dengan indikator _Provision_, _Build_, dan _Deploy_ berwarna hijau. Anda dapat memilih salah satu tersebut untuk melihat detil log dari masing-masing.
+
+![Amplify Build Process](https://user-images.githubusercontent.com/469847/224769089-e05f9a2f-0cd6-403f-b269-a69d99d01944.png)
 
 Proses build yang ada pada `build.sh` sangat sederhana karena hanya untuk mendemonstrasikan proses yang dapat dijalankan oleh Amplify Hosting ketika melakukan build aplikasi.
 
@@ -1067,11 +1192,15 @@ Fungsi file ini hanya merewrite string `{{API_BASE_URL}}` dengan nilai yang disu
   <details>
     <summary><h3>Mencoba Frontend Todo App</h3></summary>
 
-Jika proses build selesai, pilih main untuk melihat detil dari proses build terakhir. Kemudian pilih link URL pada **Domain** untuk membuka aplikasi frontend.
+Jika proses build selesai, pilih **main** untuk melihat detil dari proses build terakhir. Kemudian pilih link URL pada **Domain** untuk membuka aplikasi frontend.
+
+![Amplify Link](https://user-images.githubusercontent.com/469847/224769818-55d45171-500c-4b9f-92bd-acfc77fb7975.png)
 
 ![Gambar halaman login](https://user-images.githubusercontent.com/469847/222702635-1635d84f-0a09-4f50-9277-0ded19a4e5ea.png)
 
 Aplikasi akan meredirect ke halaman `/login.html` jika pengguna belum melakukan otentikasi. Sebelum mencoba login, aktifkan dulu debugger tools di web browser Anda dan buka tab Network.
+
+Gunakan **username** "workshop-user1" dan **password** "workshop123".
 
 ![Login error](https://user-images.githubusercontent.com/469847/222702717-72d9cb31-49fc-49bc-8999-6e049b11c475.png)
 
@@ -1135,16 +1264,31 @@ Gunakan perintah `git clone` berikut untuk meng-clone project. Sesuaikan dengan 
 git clone git@github.com:[AKUN_GITHUB_ANDA]/serverless-todo-vue.git
 ```
 
+```
+Cloning into 'serverless-todo-vue'...
+The authenticity of host 'github.com (20.205.243.166)' can't be established.
+ECDSA key fingerprint is SHA256:p2QAMXNIC1TJYWeIOttrVc98/R1BUFWu3/LiyKgUfQM.
+ECDSA key fingerprint is MD5:7b:99:81:1e:4c:91:a5:0d:5a:2e:2e:80:13:3f:24:ca.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'github.com,20.205.243.166' (ECDSA) to the list of known hosts.
+remote: Enumerating objects: 33, done.
+remote: Counting objects: 100% (33/33), done.
+remote: Compressing objects: 100% (20/20), done.
+remote: Total 33 (delta 14), reused 28 (delta 9), pack-reused 0
+Receiving objects: 100% (33/33), 8.33 KiB | 8.33 MiB/s, done.
+Resolving deltas: 100% (14/14), done.
+```
+
 #### File login.html
 
-Buka file `login.html` dan tambahkan link ke halaman `/register.html` dengan menghilangkan komentar sekitar baris 30.
+Buka file `login.html` pada Cloud9 dan tambahkan link ke halaman `/register.html` dengan menghilangkan komentar sekitar baris 30.
+
+![Edit File login.html](https://user-images.githubusercontent.com/469847/224772352-15bb598d-e211-4f66-b1b7-891d109655e2.png)
 
 ```html
-<!-- BEGIN - Remove this line
 <section class="main">
   <p><a href="register.html">Register</a></p>
 </section>
-END - Remove this line -->
 ```
 
 Menjadi seperti berikut.
@@ -1157,7 +1301,7 @@ Menjadi seperti berikut.
 
 #### File register.html
 
-Buka file `register.html` dan tambahkan link ke halaman `/login.html` dengan menghilangkan komentar sekitar baris 48.
+Buka file `register.html` di Cloud9 dan tambahkan link ke halaman `/login.html` dengan menghilangkan komentar sekitar baris 48.
 
 ```html
 <!-- BEGIN - Remove this line
@@ -1177,7 +1321,7 @@ Menjadi seperti berikut
 
 #### File index.html
 
-Buka file `index.html` dan tambahkan link ke halaman `/login.html?logout` dengan menghilangkan komentar sekitar baris 288.
+Buka file `index.html` dan tambahkan link ke halaman `/login.html?logout` dengan menghilangkan komentar sekitar baris 300.
 
 ```html
 <!-- BEGIN - Remove this line
@@ -1196,13 +1340,33 @@ Menjadi seperti berikut.
 Pastikan anda sudah berada dalam project root direktori dari `serverless-todo-vue`.
 
 ```sh
-cd ~/environment/serverless-vue-todo
+cd ~/environment/serverless-todo-vue/
+```
+
+Harusnya sekarang terdapat tiga file yang telah dimodifikasi dan siap di-commit.
+
+```sh
+git status
+```
+
+```
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   index.html
+        modified:   login.html
+        modified:   register.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
 ```
 
 Lakukan `git commit` untuk menyimpan perubahan.
 
 ```sh
-git add .
+git add index.html login.html register.html
 ```
 
 Kemudian.
@@ -1219,9 +1383,13 @@ git push origin main
 
 Ketika push sukses dilakukan sekarang coba masuk ke halaman [AWS Amplify](console.aws.amazon.com/amplify/home). Harusnya proses build sedang berjalan.
 
+![Amplify Build](https://user-images.githubusercontent.com/469847/224782010-8534391a-b03d-4b36-a8ff-f773e57c4473.png)
+
 Hal ini menunjukkan AWS Amplify mendeteksi perubahan dan melakukan build secara otomatis. Dengan ini Anda tidak perlu mengelola CI/CD server sendiri untuk frontend.
 
-Ketika build selesai coba kembali buka halaman aplikasi Frontend untuk memastikan bahwa perubahan telah ter-deploy dengan sempurna.
+Ketika build selesai coba kembali buka halaman aplikasi Frontend untuk memastikan bahwa perubahan telah ter-deploy dengan sempurna. Hal itu ditandai dengan adanya link dibagian bawah setiap halaman.
+
+![New HTML page deployed](https://user-images.githubusercontent.com/469847/224783017-0ebbd4af-1e9f-42d1-bfb3-a1e3ba47fbc7.png)
 
   </details>
   <!--Mencoba Frontend Todo App-->
@@ -1245,7 +1413,7 @@ Worker untuk mengirim email nantinya akan dijalankan pada AWS Lambda dan Amazon 
 
 Kita dapat mengintegrasikan Amazon SQS dengan AWS Lambda dengan mudah. Dimana jika terdapat pesan baru masuk ke queue di SQS, maka pesan tersebut dapat diteruskan ke sebuah fungsi Lambda.
 
-![serverless-workshop-decoupled](https://user-images.githubusercontent.com/469847/222726207-4d658be2-ea93-4ddc-b49a-4a40e6125bce.png)
+![serverless-workshop-decoupled](https://user-images.githubusercontent.com/469847/224513755-ab4be3e3-2cbb-4aae-8106-c93ce8a036b6.png)
 
 > Decoupling pengiriman email dari API registrasi
 
@@ -1261,8 +1429,9 @@ Task ini tidak harus langsung selesai ketika API registration dipanggil dan ada 
 
 1. Masuk pada halaman [Amazon SQS](https://console.aws.amazon.com/sqs/home) 
 2. Pilih **Create queue**
-2. Pada pilihan **Type** pilih **Standard** dan pada **Name** isikan &quot;serverless-todo-welcome-email-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-welcome-email-rioastamal**
-3. Sisanya biarkan sesuai nilai bawaan, kemudian pilih **Create queue**
+![Create SQS queue](https://user-images.githubusercontent.com/469847/224784309-83695da3-f0f3-4a45-812d-29625060fddd.png)
+3. Pada pilihan **Type** pilih **Standard** dan pada **Name** isikan &quot;serverless-todo-welcome-email-{{NICKNAME}}&quot;, contoh milik saya **serverless-todo-welcome-email-rioastamal**
+4. Sisanya biarkan sesuai nilai bawaan, kemudian pilih **Create queue**
 
 Nantinya queue ini akan digunakan untuk menyimpan pesan yang dikirimkan oleh API ketika user baru saja mendaftar.
 
@@ -1291,8 +1460,8 @@ Selanjutnya kita akan mengkonfigurasi environment variable yang diperlukan.
 
 1. Pada fungsi Lambda yang dibuat, pilih tab **Configuration**, pilih **Environment variables**
 2. Pilih **Edit**, pilih **Add environment variable**, tambahkan environment variable berikut tapi sesuaikan dengan milik Anda.
-   - **Key**: `APP_TABLE_NAME`, **Value**: `serverless-todo-rioastamal`
-   - **Key**: `APP_URL`, **Value**: `https://main.d1f7gufsd46hhz.amplifyapp.com` (URL dari Amplify Hosting untuk aplikasi frontend)
+   - **Key**: `APP_TABLE_NAME`, **Value**: `serverless-todo-{{NICKNAME}}`
+   - **Key**: `APP_URL`, **Value**: `{{AMPLIFY_URL}}` (URL dari Amplify Hosting untuk aplikasi frontend)
    - **Key**: `APP_FROM_EMAIL_ADDR`, **Value**: `EMAIL.ANDA+sender@gmail.com` (Ganti dengan email pengirim yang telah diverifikasi di Amazon SES)
 3. Pilih **Save**
 
@@ -1315,6 +1484,7 @@ Langkah berikutnya adalah integrasi SQS queue dengan fungsi Lambda.
 1. Masih pada tab **Configuration**, pilih **Triggers*, pilih **Add trigger**
 2. Pada **Trigger configuration** ketik &quot;SQS&quot; lalu pilih **SQS**
 3. Pada **SQS queue** pilih queue yang telah dibuat sebelumnya, milik saya adalah **serverless-todo-welcome-email-rioastamal**
+![Add SQS Trigger](https://user-images.githubusercontent.com/469847/224788078-551e2d96-29cf-41b2-b1a5-12a13b6c6444.png)
 4. Biarkan isian sisanya sesuai bawaan, pilih **Add**
 
 #### Clone Email Worker Repo
@@ -1367,8 +1537,8 @@ Kita akan mencoba mengirim ulang email registrasi ke username `workshop-user1`. 
 Sesuaikan nilainya dengan milik Anda.
 
 ```sh
-export APP_TABLE_NAME=serverless-todo-rioastamal \
-APP_URL=https://main.d1f7gufsd46hhz.amplifyapp.com \
+export APP_TABLE_NAME=serverless-todo-{{NICKNAME}} \
+APP_URL={{AMPLIFY_URL}} \
 APP_FROM_EMAIL_ADDR=EMAIL.ANDA+sender@gmail.com \
 APP_DUMMY_SQS_BODY='{ "username": "workshop-user1" }'
 ```
@@ -1377,7 +1547,27 @@ APP_DUMMY_SQS_BODY='{ "username": "workshop-user1" }'
 node local.js
 ```
 
+```
+...
+mailResponse {
+  '$metadata': {
+    httpStatusCode: 200,
+    requestId: '336fa895-4124-4f52-b4bb-e23c42d6616f',
+    extendedRequestId: undefined,
+    cfId: undefined,
+    attempts: 1,
+    totalRetryDelay: 0
+  },
+  MessageId: '010e0186dc260d9c-402d537b-7d67-48bc-8763-3eebac2aa6e7-000000'
+}
+Email sent
+```
+
 Jika sukses maka harusnya anda menerima email. Cek inbox email yang digunakan oleh `workshop-user1`.
+
+Pada fungsi email worker Lambda ini kita menambahkan beberapa metadata pada isi dari email.
+
+![Email from worker](https://user-images.githubusercontent.com/469847/224790566-728be554-82e0-454d-8f9d-5748a6eaf400.png)
 
 #### Deploy Email Worker ke Fungsi Lambda
 
@@ -1402,7 +1592,9 @@ Berikutnya kita akan mengupload zip dari bucket tersebut ke fungsi Lambda.
 3. Pada tab **Code**, pilih **Upload from**, pilih **Amazon S3 location**
 4. Pada **Amazon S3 link URL** isikan dari Object URL dari **serverless-todo-email-worker.zip** yang barusan di upload. Anda dapat melihatnya lewat halaman Amazon S3.
 
-Berikutnya memasukkan nilai ke environment variable.
+#### Memasukkan Environment Variable pada Fungsi Lambda
+
+Berikutnya memasukkan nilai ke environment variable yang diperlukan API.
 
 1. Masih dihalaman fungsi Lambda email worker
 2. Pilih tab **Configuration**, pilih **Environment variables**, pilih **Edit**
@@ -1498,7 +1690,7 @@ git branch
   main
 ```
 
-Coba buka kembali file `src/index.js` maka akan ada perbedaan dengan sebelumnya. Dimana sekarang fungsi `sendWelcomeEmail` bukan mengirim email langsung melainkan hanya mengirim pesan ke SQS queue.
+Coba buka kembali file `src/index.js` pada AWS Cloud9 maka akan ada perbedaan dengan sebelumnya. Dimana sekarang fungsi `sendWelcomeEmail` bukan mengirim email langsung melainkan hanya mengirim pesan ke SQS queue.
 
 ```javascript
 async function sendWelcomeEmail(username)
@@ -1519,7 +1711,10 @@ Pastikan masih berada pada branch `decoupled-welcome-email`. Jalankan perintah u
 > **PENTING**: Ganti [NAMA_BUCKET] dengan bucket milik Anda yang dibuat sebelumnya.
 
 ```sh
-APP_FUNCTION_BUCKET=[NAMA_BUCKET] \
+export APP_FUNCTION_BUCKET=[NAMA_BUCKET]
+```
+
+```
 bash build.sh
 ```
 
@@ -1553,7 +1748,7 @@ Jika semua berjalan sukses, maka harusnya data user masuk ke DynamoDB dan email 
 
 Petunjuk:  
   
-- Buka Logs dari fungsi Lambda untuk mengetahui error yang terjadi
+- Buka network debugger di web browser atau coba lihat logs dari fungsi Lambda untuk mengetahui error yang terjadi
 - Tambahkan permission yang diperlukan
 </blockquote>
 
@@ -1578,4 +1773,16 @@ Sehingga memungkinkan Anda untuk fokus ke aplikasi dan memungkinkan untuk rilis 
 Jika Anda menjalankan workshop ini menggunakan akun Anda sendiri maka Anda perlu menghapus resource yang telah dibuat untuk menghindari adanya tagihan biaya.
 
 Anda dapat masuk ke masing-masing halaman layanan untuk menghapusnya. Contohnya masuk Amazon S3 dan menghapus file-file yang ada pada bucket yang digunakan pada workshop ini.
+
+Berikut adalah beberapa resource yang dibuat pada workshop ini.
+
+- S3 bucket
+- DynamoDB table
+- Parameter Store di AWS Systems Manager
+- Lambda function
+- Verified identity di Amazon SES
+- SQS queue
+- App di AWS Amplify
+- SSH Public key di GitHub
+
 </details>
